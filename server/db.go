@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/juju/errors"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type User struct {
+	Id           bson.ObjectId `bson:"_id,omitempty"`
 	Email        string
 	UserName     string
 	RealName     string
@@ -19,8 +22,6 @@ var (
 	dbSession    *mgo.Session
 	dbCollection *mgo.Collection
 )
-
-const secretString = "put your secret string here"
 
 func connectToDb() (err error) {
 	dbSession, err = mgo.Dial(dbServer + ":" + dbPort)
@@ -44,9 +45,26 @@ func addNewUser(userName, pwd, email string) error {
 	newUser := User{
 		Email:        email,
 		UserName:     userName,
-		RealName:     "",
 		PasswordHash: hashedPwd,
 	}
 
 	return dbCollection.Insert(&newUser)
+}
+
+func validateUserInDb(userName, password string) (err error) {
+	if dbCollection == nil {
+		err = errors.New("There is no connection to a database!")
+		return
+	}
+
+	result := User{}
+
+	err = dbCollection.Find(bson.M{"username": userName}).One(&result)
+
+	if err != nil {
+		err = errors.New("No user '" + userName + "' found in the database!")
+		return
+	}
+
+	return bcrypt.CompareHashAndPassword(result.PasswordHash, []byte(password))
 }
