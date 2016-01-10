@@ -28,6 +28,7 @@ func main() {
 	fmt.Printf("About to listen on port 3000; go to http://localhost:3000.\n")
 
 	http.HandleFunc("/token", tokenHandler)
+	http.Handle("/api/userInfo", handle(&middlewareData{}, ensureAuthentication, userInfo))
 
 	err := http.ListenAndServe(":3000", nil)
 

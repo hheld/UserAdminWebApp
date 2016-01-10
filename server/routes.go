@@ -4,7 +4,9 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/juju/errors"
 	"log"
 	"net/http"
 	"time"
@@ -58,11 +60,51 @@ func generateToken(userName string) ([]byte, error) {
 
 	token.Claims["jti"] = hex.EncodeToString(id)
 
-	token.Claims["scopes"] = map[string]interface{}{
-		"user": userName,
-	}
+	token.Claims["user"] = userName
 
 	tokenString, err := token.SignedString([]byte(secretString))
 
 	return []byte(tokenString), err
+}
+
+func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	token, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("Signing method for token doesn't match: " + token.Header["alg"].(string))
+		}
+
+		return []byte(secretString), nil
+	})
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if token == nil {
+		err = errors.New("No authorization token specified!")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if !token.Valid {
+		err = errors.New("Token is not valid!")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+    if int64(token.Claims["exp"].(float64)) < time.Now().Unix() {
+        err = errors.New("Token expired!")
+        w.WriteHeader(http.StatusUnauthorized)
+        return
+    }
+
+	data.userName = token.Claims["user"].(string)
+
+	return
+}
+
+func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	fmt.Fprintf(w, data.userName)
+	return
 }
