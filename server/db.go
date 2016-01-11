@@ -51,7 +51,7 @@ func addNewUser(userName, pwd, email string) error {
 	return dbCollection.Insert(&newUser)
 }
 
-func validateUserInDb(userName, password string) (err error) {
+func validateUserInDb(userName, password string) (userInfo *User, err error) {
 	if dbCollection == nil {
 		err = errors.New("There is no connection to a database!")
 		return
@@ -66,5 +66,5 @@ func validateUserInDb(userName, password string) (err error) {
 		return
 	}
 
-	return bcrypt.CompareHashAndPassword(result.PasswordHash, []byte(password))
+	return &result, bcrypt.CompareHashAndPassword(result.PasswordHash, []byte(password))
 }

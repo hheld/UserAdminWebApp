@@ -27,7 +27,7 @@ func tokenHandler(w http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
 	decoder.Decode(&ud)
 
-	err := validateUserInDb(ud.UserName, ud.Password)
+	userInfo, err := validateUserInDb(ud.UserName, ud.Password)
 
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -35,7 +35,7 @@ func tokenHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := generateToken(ud.UserName)
+	token, err := generateToken(userInfo)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -46,7 +46,7 @@ func tokenHandler(w http.ResponseWriter, req *http.Request) {
 	w.Write(token)
 }
 
-func generateToken(userName string) ([]byte, error) {
+func generateToken(userInfo *User) ([]byte, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["exp"] = time.Now().Add(1 * time.Hour).Unix()
 	token.Claims["iat"] = time.Now().Unix()
@@ -60,7 +60,11 @@ func generateToken(userName string) ([]byte, error) {
 
 	token.Claims["jti"] = hex.EncodeToString(id)
 
-	token.Claims["user"] = userName
+	token.Claims["userInfo"] = map[string]interface{}{
+		"userName": userInfo.UserName,
+		"email":    userInfo.Email,
+		"realName": userInfo.RealName,
+	}
 
 	tokenString, err := token.SignedString([]byte(secretString))
 
@@ -93,18 +97,20 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 		return
 	}
 
-    if int64(token.Claims["exp"].(float64)) < time.Now().Unix() {
-        err = errors.New("Token expired!")
-        w.WriteHeader(http.StatusUnauthorized)
-        return
-    }
+	if int64(token.Claims["exp"].(float64)) < time.Now().Unix() {
+		err = errors.New("Token expired!")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
-	data.userName = token.Claims["user"].(string)
+	data.userName = token.Claims["userInfo"].(map[string]interface{})["userName"].(string)
+    data.email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
+    data.realName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
 
 	return
 }
 
 func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
-	fmt.Fprintf(w, data.userName)
+	fmt.Fprintf(w, "%+v", data)
 	return
 }

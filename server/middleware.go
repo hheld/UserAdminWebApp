@@ -7,6 +7,8 @@ import (
 
 type middlewareData struct {
 	userName string
+	email    string
+	realName string
 }
 
 type handler func(data *middlewareData, w http.ResponseWriter, r *http.Request) error
