@@ -112,3 +112,5 @@ crashlytics-build.properties
 /.idea/libraries/Go_SDK.xml
 /.idea/misc.xml
 /Server
+/cert.pem
+/key.pem

@@ -25,12 +25,12 @@ func main() {
 		return
 	}
 
-	fmt.Printf("About to listen on port 3000; go to http://localhost:3000.\n")
+	fmt.Printf("About to listen on port 10443; go to https://localhost:10443.\n")
 
 	http.HandleFunc("/token", tokenHandler)
 	http.Handle("/api/userInfo", handle(&middlewareData{}, ensureAuthentication, userInfo))
 
-	err := http.ListenAndServe(":3000", nil)
+	err := http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
 
 	if err != nil {
 		log.Println("Could not start the server.")

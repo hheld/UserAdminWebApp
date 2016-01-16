@@ -1,0 +1,8 @@
+Generate a self-signed certificate like this:
+
+openssl genrsa -des3 -out key.pem
+openssl rsa -in key.pem -out key.pem
+openssl req -sha256 -new -key key.pem -out csr.csr -subj '/CN=localhost'
+openssl x509 -req -days 365 -in csr.csr -signkey key.pem -out cert.pem
+rm csr.csr
+

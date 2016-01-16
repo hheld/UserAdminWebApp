@@ -1,7 +1,9 @@
 package main
 
 import (
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -35,7 +37,7 @@ func tokenHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	token, err := generateToken(userInfo)
+	token, id, err := generateToken(userInfo)
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -43,10 +45,29 @@ func tokenHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	http.SetCookie(w, &http.Cookie{
+		Secure:   true,
+		HttpOnly: true,
+		Name:     "token",
+		Value:    string(token),
+		MaxAge:   3600,
+	})
+
+	mac := hmac.New(sha256.New, []byte(secretString))
+	mac.Write([]byte(id))
+
+	http.SetCookie(w, &http.Cookie{
+		Secure:   true,
+		HttpOnly: false,
+		Name:     "Csrf-token",
+		Value:    hex.EncodeToString(mac.Sum(nil)),
+		MaxAge:   3600,
+	})
+
 	w.Write(token)
 }
 
-func generateToken(userInfo *User) ([]byte, error) {
+func generateToken(userInfo *User) ([]byte, string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims["exp"] = time.Now().Add(1 * time.Hour).Unix()
 	token.Claims["iat"] = time.Now().Unix()
@@ -55,10 +76,12 @@ func generateToken(userInfo *User) ([]byte, error) {
 	_, err := rand.Read(id)
 
 	if nil != err {
-		return nil, err
+		return nil, "", err
 	}
 
-	token.Claims["jti"] = hex.EncodeToString(id)
+	clientId := hex.EncodeToString(id)
+
+	token.Claims["jti"] = clientId
 
 	token.Claims["userInfo"] = map[string]interface{}{
 		"userName": userInfo.UserName,
@@ -68,11 +91,18 @@ func generateToken(userInfo *User) ([]byte, error) {
 
 	tokenString, err := token.SignedString([]byte(secretString))
 
-	return []byte(tokenString), err
+	return []byte(tokenString), clientId, err
 }
 
 func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
-	token, err := jwt.ParseFromRequest(req, func(token *jwt.Token) (interface{}, error) {
+	tokenStr, err := req.Cookie("token")
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	token, err := jwt.Parse(tokenStr.Value, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("Signing method for token doesn't match: " + token.Header["alg"].(string))
 		}
@@ -103,9 +133,29 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 		return
 	}
 
+	// protect from CSRF ###############################################################################################
+	jti := token.Claims["jti"]
+
+	mac := hmac.New(sha256.New, []byte(secretString))
+	mac.Write([]byte(jti.(string)))
+	expectedMAC := mac.Sum(nil)
+	xsrfToken, err := hex.DecodeString(req.Header.Get("X-Csrf-Token"))
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if !hmac.Equal(xsrfToken, expectedMAC) {
+		err = errors.New("XSRF token is invalid!")
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	// #################################################################################################################
+
 	data.userName = token.Claims["userInfo"].(map[string]interface{})["userName"].(string)
-    data.email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
-    data.realName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
+	data.email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
+	data.realName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
 
 	return
 }
