@@ -27,8 +27,8 @@ func main() {
 
 	fmt.Printf("About to listen on port 10443; go to https://localhost:10443.\n")
 
-	http.HandleFunc("/token", tokenHandler)
-	http.Handle("/api/userInfo", handle(&middlewareData{}, ensureAuthentication, userInfo))
+	http.Handle("/token", handle(nil, printLog, token))
+	http.Handle("/api/userInfo", handle(&middlewareData{}, printLog, ensureAuthentication, userInfo))
 
 	err := http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
 
