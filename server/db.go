@@ -33,7 +33,7 @@ func connectToDb() (err error) {
 	dbCollection = dbSession.DB(dbName).C("users")
 
     index := mgo.Index{
-        Key: []string{"email", "username"},
+        Key: []string{"username"},
         Unique: true,
         DropDups: true,
         Background: true,
