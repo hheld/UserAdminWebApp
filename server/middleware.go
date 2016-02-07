@@ -98,6 +98,13 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 }
 
 func printLog(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
-    log.Printf("%s %s", req.URL, req.RemoteAddr)
+	log.Printf("%s %s", req.URL, req.RemoteAddr)
 	return
+}
+
+func serveFilesFromDir(directory string) handler {
+	return func(data *middlewareData, w http.ResponseWriter, r *http.Request) error {
+		http.FileServer(http.Dir(directory)).ServeHTTP(w, r)
+		return nil
+	}
 }
