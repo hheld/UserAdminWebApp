@@ -114,3 +114,6 @@ crashlytics-build.properties
 /Server
 /cert.pem
 /key.pem
+
+/client
+node_modules/

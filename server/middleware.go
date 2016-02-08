@@ -5,9 +5,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -104,7 +106,15 @@ func printLog(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 
 func serveFilesFromDir(directory string) handler {
 	return func(data *middlewareData, w http.ResponseWriter, r *http.Request) error {
-		http.FileServer(http.Dir(directory)).ServeHTTP(w, r)
+		htmlIndexFile := fmt.Sprintf("%s/index.html", directory)
+        requestedFileCandidate := fmt.Sprintf("%s/%s", directory, r.URL.Path[1:])
+
+		if _, err := os.Stat(requestedFileCandidate); os.IsNotExist(err) {
+            http.ServeFile(w, r, htmlIndexFile)
+		} else {
+            http.FileServer(http.Dir(directory)).ServeHTTP(w, r)
+		}
+
 		return nil
 	}
 }
