@@ -14,8 +14,8 @@ export default class Root extends Component {
           <Provider store={store}>
                               <Router history={history}>
                                   <Route path='/'>
+                                      <Route path='/login' component={Login} />
                                   </Route>
-                                  <Route path='/login' component={Login} />
                               </Router>
                       </Provider>
       );
