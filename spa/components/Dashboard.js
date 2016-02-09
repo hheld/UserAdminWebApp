@@ -8,7 +8,7 @@ class Dashboard extends Component {
     }
 }
 
-Component.propTypes = {
+Dashboard.propTypes = {
 
 };
 
