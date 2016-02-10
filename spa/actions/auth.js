@@ -1,4 +1,5 @@
 import request from 'superagent';
+import {routeActions} from 'react-router-redux';
 
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -15,8 +16,8 @@ export function requestToken(userLoginInfo) {
         if (err || !res.ok) {
           console.log('logged in not successful');
         } else {
-          console.log('successfully logged in');
           dispatch({type: AUTH_SUCCESS});
+          dispatch(routeActions.push('/'));
         }
       });
     } else {
@@ -28,5 +29,11 @@ export function requestToken(userLoginInfo) {
 export function logout() {
   return {
     type: LOGOUT
+  };
+}
+
+export function getUserInfo() {
+  return (dispatch) => {
+    // request
   };
 }

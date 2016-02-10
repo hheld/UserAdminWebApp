@@ -4,7 +4,8 @@ import rootReducer from '../reducers';
 import { syncHistory } from 'react-router-redux';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
 
-const reduxRouterMiddleware = syncHistory(createBrowserHistory());
+export const browserHistory = createBrowserHistory();
+const reduxRouterMiddleware = syncHistory(browserHistory);
 
 const createStoreWithMiddleware = applyMiddleware(
     thunk,

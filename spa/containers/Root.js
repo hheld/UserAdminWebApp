@@ -2,17 +2,16 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import Login from './Login';
 import Dashboard from './Dashboard';
-import configureStore from '../store/configureStore';
+import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route, IndexRoute } from 'react-router';
-import createBrowserHistory from 'history/lib/createBrowserHistory';
 import { getCsrfToken, deleteCsrfToken } from '../utils/cookieHandling';
 
 const store = configureStore();
-const history = createBrowserHistory();
+const history = browserHistory;
 
 const requireAuth = (store) => {
   return (nextState, replaceState) => {
-    const {isAuthenticated} = store.getState();
+    const {isAuthenticated} = store.getState().auth;
 
     if (!isAuthenticated) {
       replaceState(nextState.location.pathname, '/login');
