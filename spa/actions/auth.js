@@ -1,10 +1,11 @@
 import request from 'superagent';
 
-export const REQUEST_TOKEN = 'REQUEST_TOKEN';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const LOGOUT = 'LOGOUT';
 
 export function requestToken(userLoginInfo) {
   return (dispatch, getState) => {
-    const {isAuthenticated} = getState();
+    const {isAuthenticated} = getState().auth;
 
     if (!isAuthenticated) {
       request
@@ -15,9 +16,17 @@ export function requestToken(userLoginInfo) {
           console.log('logged in not successful');
         } else {
           console.log('successfully logged in');
+          dispatch({type: AUTH_SUCCESS});
         }
       });
+    } else {
+      console.log('already authenticated');
     }
-    // dispatch({type: INCREMENT});
+  };
+}
+
+export function logout() {
+  return {
+    type: LOGOUT
   };
 }

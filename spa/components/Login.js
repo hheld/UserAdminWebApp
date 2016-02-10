@@ -9,7 +9,16 @@ class Login extends Component {
       });
     }
 
+    logout() {
+      this.props.actions.logout();
+    }
+
     render() {
+      const {isAuthenticated} = this.props;
+
+      const logOutButton = isAuthenticated ? <button className='btn btn-default' onClick={() => this.logout()}>Logout</button> : null;
+      const logInButton = isAuthenticated ? null : <button className='btn btn-default' onClick={() => this.login()}>Login</button>;
+
       return (
           <div className='container'>
               <form className='col-md-12'>
@@ -20,14 +29,16 @@ class Login extends Component {
                       <input type='password' className='form-control input-lg' placeholder='Password' ref='password' />
                   </div>
               </form>
-              <button className='btn btn-default' onClick={() => this.login()}>Login</button>
+              {logInButton}
+              {logOutButton}
           </div>
       );
     }
 }
 
 Login.propTypes = {
-  actions: PropTypes.object.isRequired
+  actions: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired
 };
 
 export default Login;

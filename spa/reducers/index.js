@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import { routeReducer } from 'react-router-redux';
-import reducers from '.';
+import authReducer from './auth';
 
-const rootReducer = combineReducers(Object.assign({}, reducers, {
+const rootReducer = combineReducers(Object.assign({}, {
+  auth: authReducer
+}, {
   routing: routeReducer
 }));
 

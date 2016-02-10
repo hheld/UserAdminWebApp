@@ -11,9 +11,6 @@ const store = configureStore();
 const history = createBrowserHistory();
 
 const requireAuth = (store) => {
-  console.log('token', getCsrfToken());
-  deleteCsrfToken();
-  console.log('token', getCsrfToken());
   return (nextState, replaceState) => {
     const {isAuthenticated} = store.getState();
 

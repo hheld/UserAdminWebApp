@@ -5,6 +5,7 @@ import * as AuthActions from '../actions/auth';
 
 function mapStateToProps(state) {
   return {
+    isAuthenticated: state.auth.isAuthenticated
   };
 }
 
