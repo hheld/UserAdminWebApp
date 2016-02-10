@@ -5,11 +5,15 @@ import Dashboard from './Dashboard';
 import configureStore from '../store/configureStore';
 import { Router, Route, IndexRoute } from 'react-router';
 import createBrowserHistory from 'history/lib/createBrowserHistory';
+import { getCsrfToken, deleteCsrfToken } from '../utils/cookieHandling';
 
 const store = configureStore();
 const history = createBrowserHistory();
 
 const requireAuth = (store) => {
+  console.log('token', getCsrfToken());
+  deleteCsrfToken();
+  console.log('token', getCsrfToken());
   return (nextState, replaceState) => {
     const {isAuthenticated} = store.getState();
 
