@@ -10,26 +10,26 @@ const store = configureStore();
 const history = browserHistory;
 
 const requireAuth = (store) => {
-  return (nextState, replaceState) => {
-    const {isAuthenticated} = store.getState().auth;
+    return (nextState, replaceState) => {
+        const {isAuthenticated} = store.getState().auth;
 
-    if (!isAuthenticated) {
-      replaceState(nextState.location.pathname, '/login');
-    }
-  };
+        if (!isAuthenticated) {
+            replaceState(nextState.location.pathname, '/login');
+        }
+    };
 };
 
 export default class Root extends Component {
     render() {
-      return (
-          <Provider store={store}>
-                              <Router history={history}>
-                                  <Route path='/'>
-                                      <IndexRoute component={Dashboard} onEnter={requireAuth(store)} />
-                                      <Route path='login' component={Login} />
-                                  </Route>
-                              </Router>
-                      </Provider>
-      );
+        return (
+            <Provider store={store}>
+                <Router history={history}>
+                    <Route path='/'>
+                        <IndexRoute component={Dashboard} onEnter={requireAuth(store)} />
+                        <Route path='login' component={Login} />
+                    </Route>
+                </Router>
+            </Provider>
+        );
     }
 }

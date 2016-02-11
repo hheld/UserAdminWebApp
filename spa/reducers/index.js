@@ -3,9 +3,9 @@ import { routeReducer } from 'react-router-redux';
 import authReducer from './auth';
 
 const rootReducer = combineReducers(Object.assign({}, {
-  auth: authReducer
+    auth: authReducer
 }, {
-  routing: routeReducer
+    routing: routeReducer
 }));
 
 export default rootReducer;
