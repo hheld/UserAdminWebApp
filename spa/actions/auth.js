@@ -29,7 +29,8 @@ export function requestToken(userLoginInfo) {
 }
 
 export function logout() {
-    return {
-        type: LOGOUT
+    return (dispatch) => {
+        dispatch({type: LOGOUT});
+        dispatch(routeActions.push('/login'));
     };
 }
