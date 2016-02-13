@@ -4,10 +4,13 @@ import Login from './Login';
 import Dashboard from './Dashboard';
 import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route, IndexRoute } from 'react-router';
-import { getCsrfToken, deleteCsrfToken } from '../utils/cookieHandling';
+import {getUserInfo} from '../actions/user';
 
 const store = configureStore();
 const history = browserHistory;
+
+// dispatch initial actions
+store.dispatch(getUserInfo());
 
 const requireAuth = (store) => {
     return (nextState, replaceState) => {

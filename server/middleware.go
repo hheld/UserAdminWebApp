@@ -14,9 +14,9 @@ import (
 )
 
 type middlewareData struct {
-	userName string
-	email    string
-	realName string
+	UserName string `json:"userName"`
+	Email    string `json:"email"`
+	RealName string `json:"realName"`
 }
 
 type handler func(data *middlewareData, w http.ResponseWriter, r *http.Request) error
@@ -92,9 +92,9 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 	}
 	// #################################################################################################################
 
-	data.userName = token.Claims["userInfo"].(map[string]interface{})["userName"].(string)
-	data.email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
-	data.realName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
+	data.UserName = token.Claims["userInfo"].(map[string]interface{})["userName"].(string)
+	data.Email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
+	data.RealName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
 
 	return
 }
@@ -112,8 +112,8 @@ func serveFilesFromDir(directory string) handler {
 		if _, err := os.Stat(requestedFileCandidate); os.IsNotExist(err) {
 			http.ServeFile(w, r, htmlIndexFile)
 		} else {
-            http.ServeFile(w, r, requestedFileCandidate)
-        }
+			http.ServeFile(w, r, requestedFileCandidate)
+		}
 
 		return nil
 	}

@@ -3,6 +3,7 @@ import Dashboard from '../components/Dashboard';
 
 function mapStateToProps(state) {
     return {
+        userInfo: state.user
     };
 }
 

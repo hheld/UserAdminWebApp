@@ -1,5 +1,6 @@
 import request from 'superagent';
 import {routeActions} from 'react-router-redux';
+import {getUserInfo} from './user';
 
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -14,14 +15,15 @@ export function requestToken(userLoginInfo) {
             .send(userLoginInfo)
             .end(function(err, res) {
                 if (err || !res.ok) {
-                    console.log('logged in not successful');
+                    dispatch(routeActions.push('/login'));
                 } else {
                     dispatch({type: AUTH_SUCCESS});
                     dispatch(routeActions.push('/'));
+                    dispatch(getUserInfo());
                 }
             });
         } else {
-            console.log('already authenticated');
+            // already authenticated; nothing to do!
         }
     };
 }
@@ -29,11 +31,5 @@ export function requestToken(userLoginInfo) {
 export function logout() {
     return {
         type: LOGOUT
-    };
-}
-
-export function getUserInfo() {
-    return (dispatch) => {
-        // request
     };
 }

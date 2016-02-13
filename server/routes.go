@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
@@ -97,6 +96,5 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 }
 
 func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
-	fmt.Fprintf(w, "%+v", data)
-	return
+	return json.NewEncoder(w).Encode(*data)
 }
