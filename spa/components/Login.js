@@ -13,27 +13,42 @@ class Login extends Component {
         this.props.actions.logout();
     }
 
+    onKeyUp(event) {
+        if(event.keyCode===13) {
+            this.login();
+        }
+    }
+
     render() {
         const {isAuthenticated, userInfo} = this.props;
 
-        const logOutButton = isAuthenticated ? <button className='btn btn-default' onClick={() => this.logout()}>Logout</button> : null;
-        const logInButton = isAuthenticated ? null : <button className='btn btn-default' onClick={() => this.login()}>Login</button>;
+        const logOutButton = isAuthenticated ? <button className='btn btn-default btn-xs' type='button' onClick={() => this.logout()}>Logout</button> : null;
+        const logInButton = isAuthenticated ? null : <button className='btn btn-default' type='button' onClick={() => this.login()}>Login</button>;
 
-        const loginForm = isAuthenticated ? <p>Already logged in as {userInfo.userName}</p> :
-                <form className='col-md-12'>
+        const loginForm = isAuthenticated ? <p>Already logged in as {userInfo.userName} {logOutButton}</p> :
+                <form className='form-horizontal well'>
                     <div className='form-group'>
-                        <input type='text' className='form-control input-lg' placeholder='User name' ref='userName' />
+                        <label className='control-label col-sm-2'>User name</label>
+                        <div className='col-sm-10'>
+                            <input type='text' className='form-control input-xs' placeholder='User name' ref='userName' onKeyUp={(event) => this.onKeyUp(event)} />
+                        </div>
                     </div>
                     <div className='form-group'>
-                        <input type='password' className='form-control input-lg' placeholder='Password' ref='password' />
+                        <label className='control-label col-sm-2'>Password</label>
+                        <div className='col-sm-10'>
+                            <input type='password' className='form-control input-xs' placeholder='Password' ref='password' onKeyUp={(event) => this.onKeyUp(event)} />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <div className="col-sm-offset-2 col-sm-10">
+                            {logInButton}
+                        </div>
                     </div>
                 </form>;
 
         return (
             <div className='container'>
                 {loginForm}
-                {logInButton}
-                {logOutButton}
             </div>
         );
     }
