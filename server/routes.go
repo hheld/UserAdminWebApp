@@ -121,3 +121,16 @@ func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 
 	return json.NewEncoder(w).Encode(userData)
 }
+
+func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	var ud = struct {
+		UserId string `json:"userId"`
+	}{}
+
+	decoder := json.NewDecoder(req.Body)
+	decoder.Decode(&ud)
+
+	err = deleteUserFromDb(ud.UserId)
+
+	return
+}

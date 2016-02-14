@@ -30,6 +30,7 @@ func main() {
 	http.Handle("/token", handle(nil, printLog, token))
 	http.Handle("/api/userInfo", handle(&middlewareData{}, printLog, ensureAuthentication, userInfo))
 	http.Handle("/api/allUsers", handle(&middlewareData{}, printLog, ensureAuthentication, allUsers))
+	http.Handle("/api/deleteUser", handle(&middlewareData{}, printLog, ensureAuthentication, deleteUser))
 	http.Handle("/", handle(nil, printLog, serveFilesFromDir("client")))
 
 	err := http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)

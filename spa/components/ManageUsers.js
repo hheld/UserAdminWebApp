@@ -22,10 +22,14 @@ class ManageUsers extends React.Component {
     }
 
     render () {
-        const {users} = this.props;
+        const {users, currentUser} = this.props;
+        const currentUserIsAdmin = currentUser.roles ? currentUser.roles.indexOf('admin')!==-1 : null;
+
         const userRows = users.map((user, idx) => {
             const isActive = this.state.selectedUserRow===idx;
             const activeCss = isActive ? 'active' : null;
+
+            const deleteUserBtn = currentUserIsAdmin ? <button className='btn btn-danger btn-xs' onClick={() => this.props.deleteUser(user.id)}>Delete</button> : null;
 
             return (
                 <tr key={idx} className={activeCss} onClick={() => this.rowClicked(idx)}>
@@ -33,6 +37,7 @@ class ManageUsers extends React.Component {
                     <td>{user.realName}</td>
                     <td>{user.email}</td>
                     <td>{user.roles}</td>
+                    <td>{deleteUserBtn}</td>
                 </tr>
             );
         });
@@ -47,6 +52,7 @@ class ManageUsers extends React.Component {
                             <th>Real name</th>
                             <th>Email</th>
                             <th>Roles</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +66,9 @@ class ManageUsers extends React.Component {
 
 ManageUsers.propTypes = {
     users: PropTypes.array.isRequired,
-    updateFromServer: PropTypes.func.isRequired
+    currentUser: PropTypes.object.isRequired,
+    updateFromServer: PropTypes.func.isRequired,
+    deleteUser: PropTypes.func.isRequired
 };
 
 export default ManageUsers;

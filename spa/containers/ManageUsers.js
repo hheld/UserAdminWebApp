@@ -1,16 +1,18 @@
 import { connect } from 'react-redux';
 import ManageUsers from '../components/ManageUsers';
-import { getAllUsers } from '../actions/user';
+import { getAllUsers, deleteUser } from '../actions/user';
 
 function mapStateToProps(state) {
     return {
-        users: state.user.availableUsers
+        users: state.user.availableUsers,
+        currentUser: state.user.currentUser
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        updateFromServer: () => dispatch(getAllUsers())
+        updateFromServer: () => dispatch(getAllUsers()),
+        deleteUser: (userId) => dispatch(deleteUser(userId))
     };
 }
 

@@ -95,3 +95,11 @@ func allUsersInDb() ([]User, error) {
 
 	return result, nil
 }
+
+func deleteUserFromDb(userId string) error {
+	if dbCollection == nil {
+		return errors.New("There is no connection to a database!")
+	}
+
+	return dbCollection.RemoveId(bson.ObjectIdHex(userId))
+}

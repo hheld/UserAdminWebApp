@@ -58,3 +58,21 @@ export function getAllUsers() {
         }
     };
 }
+
+export function deleteUser(userId) {
+    return (dispatch, getState) => {
+        const {isAuthenticated, csrfToken} = getState().auth;
+
+        if(isAuthenticated) {
+            request
+            .post('/api/deleteUser')
+            .set('X-Csrf-token', csrfToken)
+            .send({userId})
+            .end(function(err, res) {
+                if(!err && res.ok) {
+                    dispatch(getAllUsers());
+                }
+            });
+        }
+    };
+}
