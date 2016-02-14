@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import ManageUsers from '../components/ManageUsers';
+import { getAllUsers } from '../actions/user';
 
 function mapStateToProps(state) {
     return {
@@ -9,6 +10,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
+        updateFromServer: () => dispatch(getAllUsers())
     };
 }
 

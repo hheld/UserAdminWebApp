@@ -9,7 +9,7 @@ class ManageUsers extends React.Component {
         };
     }
 
-    rowClicked(user, rowIdx) {
+    rowClicked(rowIdx) {
         if(this.state.selectedUserRow===rowIdx) {
             this.setState({
                 selectedUserRow: null
@@ -28,7 +28,7 @@ class ManageUsers extends React.Component {
             const activeCss = isActive ? 'active' : null;
 
             return (
-                <tr key={idx} className={activeCss} onClick={() => this.rowClicked(user, idx)}>
+                <tr key={idx} className={activeCss} onClick={() => this.rowClicked(idx)}>
                     <td>{user.userName}</td>
                     <td>{user.realName}</td>
                     <td>{user.email}</td>
@@ -39,6 +39,7 @@ class ManageUsers extends React.Component {
 
         return (
             <div className='table-responsive'>
+                <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button>
                 <table className='table'>
                     <thead>
                         <tr>
@@ -58,7 +59,8 @@ class ManageUsers extends React.Component {
 }
 
 ManageUsers.propTypes = {
-    users: PropTypes.array.isRequired
+    users: PropTypes.array.isRequired,
+    updateFromServer: PropTypes.func.isRequired
 };
 
 export default ManageUsers;
