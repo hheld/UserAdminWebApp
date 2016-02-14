@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import UserInfo from './UserInfo';
+import Header from './Header';
 
 class Dashboard extends Component {
     render() {
@@ -7,8 +8,8 @@ class Dashboard extends Component {
         const {logout} = this.props;
 
         return (
-            <div>
-                <h1>Dashboard</h1>
+            <div className='container'>
+                <Header headerText='Dashboard' />
                 <UserInfo userName={userName} realName={realName} email={email} logout={logout} roles={roles} />
             </div>
         );

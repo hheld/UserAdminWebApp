@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import Header from './Header';
 
 class Login extends Component {
     login() {
@@ -48,6 +49,7 @@ class Login extends Component {
 
         return (
             <div className='container'>
+                <Header headerText='Authenticate' />
                 {loginForm}
             </div>
         );

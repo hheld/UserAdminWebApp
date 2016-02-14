@@ -18,17 +18,17 @@ class UserInfo extends React.Component {
                     <div className='row-fluid'>
                         <div className='col-md-4'>
                             <img src={gravatarUrl} className='img-circle img-responsive' />
+                            <div className='navbar-btn text-center' style={{marginTop: 20}}>
+                                <button className='btn btn-primary btn-xs' onClick={logout}>Logout</button>
+                            </div>
                         </div>
 
-                        <div className='col-md-6'>
-                            <h3>{userName}</h3>
+                        <div className='col-md-8'>
+                            <h3>Logged in as</h3>
+                            <h6>User: {userName}</h6>
                             <h6>Email: {email}</h6>
                             <h6>Name: {realName}</h6>
                             {roleLabels}
-                        </div>
-
-                        <div className='col-md-1'>
-                            <button className='btn btn-primary btn-xs' onClick={logout}>Logout</button>
                         </div>
                     </div>
                 </div>
