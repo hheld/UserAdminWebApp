@@ -3,10 +3,14 @@ import md5 from 'md5';
 
 class UserInfo extends React.Component {
     render () {
-        const {userName, realName, email} = this.props;
+        const {userName, realName, email, roles} = this.props;
         const emailHash = md5(email);
         const gravatarUrl = 'https://secure.gravatar.com/avatar/' + emailHash;
         const logout = this.props.logout;
+
+        const roleLabels = roles ? roles.map((role, idx) => {
+            return (<label key={idx} className='label label-danger' style={{display: 'inline-block'}}>{role}</label>);
+        }) : null;
 
         return (
             <div style={{width: 350}} className='pull-right'>
@@ -20,6 +24,7 @@ class UserInfo extends React.Component {
                             <h3>{userName}</h3>
                             <h6>Email: {email}</h6>
                             <h6>Name: {realName}</h6>
+                            {roleLabels}
                         </div>
 
                         <div className='col-md-1'>
@@ -36,7 +41,8 @@ UserInfo.propTypes = {
     userName: PropTypes.string.isRequired,
     realName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
-    logout: PropTypes.func.isRequired
+    logout: PropTypes.func.isRequired,
+    roles: PropTypes.array
 };
 
 UserInfo.defaultProps = {

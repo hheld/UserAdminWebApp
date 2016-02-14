@@ -13,6 +13,7 @@ type User struct {
 	UserName     string
 	RealName     string
 	PasswordHash []byte
+	Roles        []string
 }
 
 var (
@@ -45,7 +46,7 @@ func connectToDb() (err error) {
 	return
 }
 
-func addNewUser(userName, pwd, email string) error {
+func addNewUser(userName, pwd, email, realName string) error {
 	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
 
 	if err != nil {
@@ -55,7 +56,9 @@ func addNewUser(userName, pwd, email string) error {
 	newUser := User{
 		Email:        email,
 		UserName:     userName,
+		RealName:     realName,
 		PasswordHash: hashedPwd,
+		Roles:        []string{"admin"},
 	}
 
 	return dbCollection.Insert(&newUser)

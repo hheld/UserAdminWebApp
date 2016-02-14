@@ -10,6 +10,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -88,6 +89,7 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 		"userName": userInfo.UserName,
 		"email":    userInfo.Email,
 		"realName": userInfo.RealName,
+		"roles":    strings.Join(userInfo.Roles, ","),
 	}
 
 	tokenString, err := token.SignedString([]byte(secretString))

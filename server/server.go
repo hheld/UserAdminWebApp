@@ -15,7 +15,7 @@ func main() {
 	flag.Parse()
 
 	if newUser != "" && newUserPwd != "" && newUserEmail != "" {
-		err := addNewUser(newUser, newUserPwd, newUserEmail)
+		err := addNewUser(newUser, newUserPwd, newUserEmail, newUserRealName)
 
 		if err != nil {
 			log.Printf("Could not add new user: %+v\n", err)

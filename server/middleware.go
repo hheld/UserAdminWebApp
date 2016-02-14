@@ -10,13 +10,16 @@ import (
 	"log"
 	"net/http"
 	"os"
+	//"strings"
+	"strings"
 	"time"
 )
 
 type middlewareData struct {
-	UserName string `json:"userName"`
-	Email    string `json:"email"`
-	RealName string `json:"realName"`
+	UserName string   `json:"userName"`
+	Email    string   `json:"email"`
+	RealName string   `json:"realName"`
+	Roles    []string `json:"roles"`
 }
 
 type handler func(data *middlewareData, w http.ResponseWriter, r *http.Request) error
@@ -95,6 +98,7 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 	data.UserName = token.Claims["userInfo"].(map[string]interface{})["userName"].(string)
 	data.Email = token.Claims["userInfo"].(map[string]interface{})["email"].(string)
 	data.RealName = token.Claims["userInfo"].(map[string]interface{})["realName"].(string)
+	data.Roles = strings.Split(token.Claims["userInfo"].(map[string]interface{})["roles"].(string), ",")
 
 	return
 }
