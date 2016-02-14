@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import Login from './Login';
 import Dashboard from './Dashboard';
+import ManageUsers from './ManageUsers';
 import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route, IndexRoute } from 'react-router';
 import {getUserInfo} from '../actions/user';
@@ -30,6 +31,9 @@ export default class Root extends Component {
                     <Route path='/'>
                         <IndexRoute component={Dashboard} onEnter={requireAuth(store)} />
                         <Route path='login' component={Login} />
+                        <Route path='dashboard' component={Dashboard} onEnter={requireAuth(store)}>
+                            <Route path= '/manageUsers' component={ManageUsers} />
+                        </Route>
                     </Route>
                 </Router>
             </Provider>

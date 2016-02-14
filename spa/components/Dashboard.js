@@ -7,10 +7,18 @@ class Dashboard extends Component {
         const {userName, realName, email, roles} = this.props.userInfo;
         const {logout} = this.props;
 
+        const subComponents = this.props.children;
+
+        const navigationLinks = subComponents ? null :
+                <a role='button' onClick={() => this.props.navigateToLink('/manageUsers')}>Manage users</a>
+        ;
+
         return (
             <div className='container'>
-                <Header headerText='Dashboard' />
+                <Header headerText='Dashboard' navigateToLink={this.props.navigateToLink} navPath={this.props.navPath} />
                 <UserInfo userName={userName} realName={realName} email={email} logout={logout} roles={roles} />
+                {navigationLinks}
+                {subComponents}
             </div>
         );
     }
@@ -18,7 +26,9 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
     userInfo: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired
+    logout: PropTypes.func.isRequired,
+    navigateToLink: PropTypes.func.isRequired,
+    navPath: PropTypes.string.isRequired
 };
 
 export default Dashboard;
