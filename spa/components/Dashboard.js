@@ -10,7 +10,7 @@ class Dashboard extends Component {
         const subComponents = this.props.children;
 
         const navigationLinks = subComponents ? null :
-                <a role='button' onClick={() => this.props.navigateToLink('/manageUsers')}>Manage users</a>
+                <a role='button' onClick={() => this.props.navigateToLink('/admin/manageUsers')}>Manage users</a>
         ;
 
         return (

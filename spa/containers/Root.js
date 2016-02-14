@@ -4,7 +4,7 @@ import Login from './Login';
 import Dashboard from './Dashboard';
 import ManageUsers from './ManageUsers';
 import configureStore, {browserHistory} from '../store/configureStore';
-import { Router, Route, IndexRoute } from 'react-router';
+import { Router, Route } from 'react-router';
 import { getUserInfo, getAllUsers } from '../actions/user';
 
 const store = configureStore();
@@ -30,10 +30,9 @@ export default class Root extends Component {
             <Provider store={store}>
                 <Router history={history}>
                     <Route path='/'>
-                        <IndexRoute component={Dashboard} onEnter={requireAuth(store)} />
                         <Route path='login' component={Login} />
-                        <Route path='dashboard' component={Dashboard} onEnter={requireAuth(store)}>
-                            <Route path= '/manageUsers' component={ManageUsers} />
+                        <Route path='admin' component={Dashboard} onEnter={requireAuth(store)}>
+                            <Route path= 'manageUsers' component={ManageUsers} />
                         </Route>
                     </Route>
                 </Router>

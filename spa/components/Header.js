@@ -3,12 +3,12 @@ import React, { PropTypes } from 'react';
 class Header extends React.Component {
     render () {
         const {headerText, subHeaderText, navigateToLink, navPath} = this.props;
-        const paths = navPath ? navPath==='/' ? [''] : navPath.split('/') : [];
+        const paths = navPath ? navPath.slice(1).split('/') : [];
         const numOfPaths = paths.length;
 
         const navItems = navigateToLink && navPath ? paths.map((link, idx) => {
-            return idx===numOfPaths-1 ? <li key={idx} clasName='active'>{link || 'Home'}</li> :
-            <li key={idx}><a role='button' onClick={() => navigateToLink('/'+link)}>{link || 'Home'}</a></li>;
+            return numOfPaths-1===idx ? <li key={idx}>{link}</li>
+            : <li key={idx}><a role='button' onClick={() => navigateToLink('/'+link)}>{link}</a></li>;
         }) : null;
 
         const navBar = navItems ? <ol className="breadcrumb">
