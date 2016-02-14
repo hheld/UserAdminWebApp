@@ -8,6 +8,11 @@ export const LOGOUT = 'LOGOUT';
 export function requestToken(userLoginInfo) {
     return (dispatch, getState) => {
         const {isAuthenticated} = getState().auth;
+        let action = getState().routing.location.action;
+
+        if(!action.startsWith('/')) {
+            action = getState().routing.location.pathname;
+        }
 
         if (!isAuthenticated) {
             request
@@ -18,7 +23,7 @@ export function requestToken(userLoginInfo) {
                     dispatch(routeActions.push('/login'));
                 } else {
                     dispatch({type: AUTH_SUCCESS});
-                    dispatch(routeActions.push('/'));
+                    dispatch(routeActions.push(action));
                     dispatch(getUserInfo());
                     dispatch(getAllUsers());
                 }
