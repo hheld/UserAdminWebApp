@@ -5,7 +5,7 @@ class UserInfo extends React.Component {
     render () {
         const {userName, realName, email, roles} = this.props;
         const emailHash = md5(email);
-        const gravatarUrl = 'https://secure.gravatar.com/avatar/' + emailHash;
+        const gravatarUrl = 'https://secure.gravatar.com/avatar/' + emailHash + '?d=mm';
         const logout = this.props.logout;
 
         const roleLabels = roles ? roles.map((role, idx) => {
