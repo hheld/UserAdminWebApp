@@ -81,3 +81,17 @@ func validateUserInDb(userName, password string) (userInfo *User, err error) {
 
 	return &result, bcrypt.CompareHashAndPassword(result.PasswordHash, []byte(password))
 }
+
+func allUsersInDb() ([]User, error) {
+	if dbCollection == nil {
+		return nil, errors.New("There is no connection to a database!")
+	}
+
+	var result []User
+
+	if err := dbCollection.Find(bson.M{}).All(&result); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}

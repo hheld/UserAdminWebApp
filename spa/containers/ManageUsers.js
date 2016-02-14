@@ -3,7 +3,7 @@ import ManageUsers from '../components/ManageUsers';
 
 function mapStateToProps(state) {
     return {
-        users: ['user1', 'user2']
+        users: state.user.availableUsers
     };
 }
 

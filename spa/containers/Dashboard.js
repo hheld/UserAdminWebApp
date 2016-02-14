@@ -5,7 +5,7 @@ import { routeActions } from 'react-router-redux';
 
 function mapStateToProps(state) {
     return {
-        userInfo: state.user,
+        userInfo: state.user.currentUser,
         navPath: state.routing.location.pathname
     };
 }

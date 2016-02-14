@@ -1,11 +1,19 @@
 import request from 'superagent';
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+export const SET_AVAILABLE_USERS = 'SET_AVAILABLE_USERS';
 
 export function setCurrentUser(userInfo) {
     return {
         type: SET_CURRENT_USER,
         userInfo: userInfo
+    };
+}
+
+export function setAvailableUsers(users) {
+    return {
+        type: SET_AVAILABLE_USERS,
+        users: users
     };
 }
 
@@ -26,6 +34,27 @@ export function getUserInfo() {
             });
         } else {
             dispatch(setCurrentUser({}));
+        }
+    };
+}
+
+export function getAllUsers() {
+    return (dispatch, getState) => {
+        const {isAuthenticated, csrfToken} = getState().auth;
+
+        if(isAuthenticated) {
+            request
+            .get('/api/allUsers')
+            .set('X-Csrf-token', csrfToken)
+            .end(function(err, res) {
+                if(err || !res.ok) {
+                    dispatch(setAvailableUsers([]));
+                } else {
+                    dispatch(setAvailableUsers(JSON.parse(res.text)));
+                }
+            });
+        } else {
+            dispatch(setAvailableUsers([]));
         }
     };
 }

@@ -20,6 +20,7 @@ type middlewareData struct {
 	Email    string   `json:"email"`
 	RealName string   `json:"realName"`
 	Roles    []string `json:"roles"`
+	Id       string   `json:"id"`
 }
 
 type handler func(data *middlewareData, w http.ResponseWriter, r *http.Request) error

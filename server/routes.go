@@ -100,3 +100,24 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	return json.NewEncoder(w).Encode(*data)
 }
+
+func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	users, err := allUsersInDb()
+
+	if err != nil {
+		return
+	}
+
+	numOfUsers := len(users)
+	userData := make([]middlewareData, numOfUsers)
+
+	for idx, user := range users {
+		userData[idx].Email = user.Email
+		userData[idx].RealName = user.RealName
+		userData[idx].UserName = user.UserName
+		userData[idx].Roles = user.Roles
+		userData[idx].Id = user.Id.Hex()
+	}
+
+	return json.NewEncoder(w).Encode(userData)
+}

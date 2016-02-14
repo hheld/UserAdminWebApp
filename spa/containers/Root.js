@@ -5,13 +5,14 @@ import Dashboard from './Dashboard';
 import ManageUsers from './ManageUsers';
 import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route, IndexRoute } from 'react-router';
-import {getUserInfo} from '../actions/user';
+import { getUserInfo, getAllUsers } from '../actions/user';
 
 const store = configureStore();
 const history = browserHistory;
 
 // dispatch initial actions
 store.dispatch(getUserInfo());
+store.dispatch(getAllUsers());
 
 const requireAuth = (store) => {
     return (nextState, replaceState) => {

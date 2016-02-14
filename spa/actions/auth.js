@@ -1,6 +1,6 @@
 import request from 'superagent';
-import {routeActions} from 'react-router-redux';
-import {getUserInfo} from './user';
+import { routeActions } from 'react-router-redux';
+import { getUserInfo, getAllUsers } from './user';
 
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -20,6 +20,7 @@ export function requestToken(userLoginInfo) {
                     dispatch({type: AUTH_SUCCESS});
                     dispatch(routeActions.push('/'));
                     dispatch(getUserInfo());
+                    dispatch(getAllUsers());
                 }
             });
         } else {
