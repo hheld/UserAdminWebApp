@@ -1,22 +1,26 @@
 import React, { PropTypes } from 'react';
+import EditUser from './EditUser';
 
 class ManageUsers extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedUserRow: null
+            selectedUserRow: null,
+            selectedUser: null
         };
     }
 
     rowClicked(rowIdx) {
         if(this.state.selectedUserRow===rowIdx) {
             this.setState({
-                selectedUserRow: null
+                selectedUserRow: null,
+                selectedUser: null
             });
         } else {
             this.setState({
-                selectedUserRow: rowIdx
+                selectedUserRow: rowIdx,
+                selectedUser: this.props.users[rowIdx]
             });
         }
     }
@@ -42,6 +46,8 @@ class ManageUsers extends React.Component {
             );
         });
 
+        const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} /> : null;
+
         return (
             <div className='table-responsive'>
                 <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button>
@@ -59,6 +65,7 @@ class ManageUsers extends React.Component {
                         {userRows}
                     </tbody>
                 </table>
+                {userEditor}
             </div>
         );
     }
