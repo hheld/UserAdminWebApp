@@ -89,6 +89,7 @@ export function updateUser(userData) {
             .end(function(err, res) {
                 if(!err && res.ok) {
                     dispatch(getAllUsers());
+                    dispatch(getUserInfo());
                 }
             });
         }

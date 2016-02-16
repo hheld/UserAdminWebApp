@@ -109,10 +109,10 @@ func updateUserInDb(userData *User) error {
 		return errors.New("There is no connection to a database!")
 	}
 
-    return dbCollection.Update(bson.M{"_id": userData.Id}, bson.M{"$set": bson.M{
-        "username": userData.UserName,
-        "email": userData.Email,
-        "realname": userData.RealName,
-        "roles": userData.Roles,
-    }})
+	return dbCollection.Update(bson.M{"_id": userData.Id}, bson.M{"$set": bson.M{
+		"username": userData.UserName,
+		"email":    userData.Email,
+		"realname": userData.RealName,
+		"roles":    userData.Roles,
+	}})
 }

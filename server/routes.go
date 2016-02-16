@@ -103,7 +103,22 @@ func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 		return errors.New("User info endpoint only accepts GET requests!")
 	}
 
-	return json.NewEncoder(w).Encode(*data)
+	result := User{}
+	err = dbCollection.Find(bson.M{"username": data.UserName}).One(&result)
+
+	if err != nil {
+		return
+	}
+
+	userInfoData := middlewareData{
+		Email:    result.Email,
+		UserName: result.UserName,
+		RealName: result.RealName,
+		Roles:    result.Roles,
+		Id:       result.Id.Hex(),
+	}
+
+	return json.NewEncoder(w).Encode(userInfoData)
 }
 
 func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
