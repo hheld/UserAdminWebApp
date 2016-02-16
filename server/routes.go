@@ -99,10 +99,18 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 }
 
 func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "GET" {
+		return errors.New("User info endpoint only accepts GET requests!")
+	}
+
 	return json.NewEncoder(w).Encode(*data)
 }
 
 func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "GET" {
+		return errors.New("All users endpoint only accepts GET requests!")
+	}
+
 	users, err := allUsersInDb()
 
 	if err != nil {
@@ -124,6 +132,10 @@ func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 }
 
 func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "POST" {
+		return errors.New("Delete user endpoint only accepts POST requests!")
+	}
+
 	var ud = struct {
 		UserId string `json:"userId"`
 	}{}
@@ -135,6 +147,10 @@ func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) 
 }
 
 func updateUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "POST" {
+		return errors.New("Update user endpoint only accepts POST requests!")
+	}
+
 	userData := middlewareData{}
 
 	decoder := json.NewDecoder(req.Body)
