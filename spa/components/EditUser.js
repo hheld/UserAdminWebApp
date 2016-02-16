@@ -34,7 +34,7 @@ class EditUser extends React.Component {
     updateUser() {
         const updatedUserData = Object.assign({}, this.state, {
             id: this.props.user.id,
-            roles: this.state.roles.split(/\s*,\s*/)
+            roles: this.state.roles.length<2 ? this.state.roles : this.state.roles.split(/\s*,\s*/)
         });
 
         this.props.updateUser(updatedUserData);
