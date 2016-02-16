@@ -25,6 +25,16 @@ class ManageUsers extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        const {selectedUserRow} = this.state;
+
+        if(selectedUserRow !== null) {
+            this.setState({
+                selectedUser: nextProps.users[selectedUserRow]
+            });
+        }
+    }
+
     render () {
         const {users, currentUser} = this.props;
         const currentUserIsAdmin = currentUser.roles ? currentUser.roles.indexOf('admin')!==-1 : null;
@@ -35,18 +45,23 @@ class ManageUsers extends React.Component {
 
             const deleteUserBtn = currentUserIsAdmin ? <button className='btn btn-danger btn-xs' onClick={() => this.props.deleteUser(user.id)}>Delete</button> : null;
 
+            const roles = user.roles.map((role, roleIdx) => {
+                const labelClass = role==='admin' ? 'label label-danger' : 'label label-info';
+                return <span key={roleIdx} className={labelClass} style={{display: 'inline-block', marginLeft: 3}}>{role}</span>;
+            });
+
             return (
                 <tr key={idx} className={activeCss} onClick={() => this.rowClicked(idx)}>
                     <td>{user.userName}</td>
                     <td>{user.realName}</td>
                     <td>{user.email}</td>
-                    <td>{user.roles}</td>
+                    <td>{roles}</td>
                     <td>{deleteUserBtn}</td>
                 </tr>
             );
         });
 
-        const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} /> : null;
+        const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} updateUser={this.props.updateUser} /> : null;
 
         return (
             <div className='table-responsive'>
@@ -75,7 +90,8 @@ ManageUsers.propTypes = {
     users: PropTypes.array.isRequired,
     currentUser: PropTypes.object.isRequired,
     updateFromServer: PropTypes.func.isRequired,
-    deleteUser: PropTypes.func.isRequired
+    deleteUser: PropTypes.func.isRequired,
+    updateUser: PropTypes.func.isRequired
 };
 
 export default ManageUsers;

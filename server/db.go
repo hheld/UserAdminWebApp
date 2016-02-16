@@ -103,3 +103,11 @@ func deleteUserFromDb(userId string) error {
 
 	return dbCollection.RemoveId(bson.ObjectIdHex(userId))
 }
+
+func updateUserInDb(userData *User) error {
+	if dbCollection == nil {
+		return errors.New("There is no connection to a database!")
+	}
+
+	return dbCollection.UpdateId(userData.Id, userData)
+}

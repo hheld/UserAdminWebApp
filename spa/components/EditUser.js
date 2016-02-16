@@ -31,8 +31,16 @@ class EditUser extends React.Component {
         this.initState(nextProps);
     }
 
-    render () {
+    updateUser() {
+        const updatedUserData = Object.assign({}, this.state, {
+            id: this.props.user.id,
+            roles: this.state.roles.split(/\s*,\s*/)
+        });
 
+        this.props.updateUser(updatedUserData);
+    }
+
+    render () {
         return (
             <div className='well'>
                 <form className='form-horizontal'>
@@ -62,7 +70,7 @@ class EditUser extends React.Component {
                     </div>
                     <div className='form-group'>
                         <div className='col-sm-offset-2 col-sm-10'>
-                            <button type='button' className='btn btn-warning'>Update user</button>
+                            <button type='button' className='btn btn-warning' onClick={() => this.updateUser()}>Update user</button>
                         </div>
                     </div>
                 </form>
@@ -72,7 +80,8 @@ class EditUser extends React.Component {
 }
 
 EditUser.propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    updateUser: PropTypes.func.isRequired
 };
 
 export default EditUser;

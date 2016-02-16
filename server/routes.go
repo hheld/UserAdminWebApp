@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
+	"gopkg.in/mgo.v2/bson"
 	"log"
 	"net/http"
 	"strings"
@@ -130,7 +131,22 @@ func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) 
 	decoder := json.NewDecoder(req.Body)
 	decoder.Decode(&ud)
 
-	err = deleteUserFromDb(ud.UserId)
+	return deleteUserFromDb(ud.UserId)
+}
 
-	return
+func updateUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	userData := middlewareData{}
+
+	decoder := json.NewDecoder(req.Body)
+	decoder.Decode(&userData)
+
+	updatedUserData := User{
+		Id:       bson.ObjectIdHex(userData.Id),
+		Email:    userData.Email,
+		UserName: userData.UserName,
+		RealName: userData.RealName,
+		Roles:    userData.Roles,
+	}
+
+	return updateUserInDb(&updatedUserData)
 }
