@@ -43,13 +43,8 @@ UserInfo.propTypes = {
     realName: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     logout: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired,
     roles: PropTypes.array
-};
-
-UserInfo.defaultProps = {
-    userName: '',
-    realName: '',
-    email: ''
 };
 
 export default UserInfo;

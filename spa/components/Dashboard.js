@@ -4,7 +4,7 @@ import Header from './Header';
 
 class Dashboard extends Component {
     render() {
-        const {userName, realName, email, roles} = this.props.userInfo;
+        const {userName, realName, email, roles, id} = this.props.userInfo;
         const {logout} = this.props;
 
         const subComponents = this.props.children;
@@ -13,10 +13,14 @@ class Dashboard extends Component {
                 <a role='button' onClick={() => this.props.navigateToLink('/admin/manageUsers')}>Manage users</a>
         ;
 
+        const userInfo = userName!==undefined && realName!==undefined && email!==undefined && roles!==undefined && id!==undefined ?
+        <UserInfo userName={userName} realName={realName} email={email} logout={logout} roles={roles} userId={id} /> :
+            null;
+
         return (
             <div className='container'>
                 <Header headerText='Dashboard' navigateToLink={this.props.navigateToLink} navPath={this.props.navPath} />
-                <UserInfo userName={userName} realName={realName} email={email} logout={logout} roles={roles} />
+                {userInfo}
                 {navigationLinks}
                 {subComponents}
             </div>
