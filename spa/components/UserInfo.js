@@ -9,7 +9,8 @@ class UserInfo extends React.Component {
         const logout = this.props.logout;
 
         const roleLabels = roles ? roles.map((role, idx) => {
-            return (<label key={idx} className='label label-danger' style={{display: 'inline-block'}}>{role}</label>);
+            const labelClass = role === 'admin' ? 'label label-danger' : 'label label-info';
+            return (<label key={idx} className={labelClass} style={{display: 'inline-block', marginLeft: 3}}>{role}</label>);
         }) : null;
 
         return (
