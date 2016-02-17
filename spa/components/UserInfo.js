@@ -14,23 +14,19 @@ class UserInfo extends React.Component {
         }) : null;
 
         return (
-            <div style={{width: 350}} className='pull-right'>
-                <div className='container well' style={{display: 'block', maxWidth: 100 + '%'}}>
-                    <div className='row-fluid'>
-                        <div className='col-md-4'>
-                            <img src={gravatarUrl} className='img-circle img-responsive' />
-                            <div className='navbar-btn text-center' style={{marginTop: 20}}>
-                                <button className='btn btn-primary btn-xs' onClick={logout}>Logout</button>
-                            </div>
+            <div className='container-fluid well well-sm'>
+                <div className='row-fluid'>
+                    <div className='col-md-4'>
+                        <img src={gravatarUrl} className='img-circle img-responsive' />
+                        <div className='navbar-btn text-center' style={{marginTop: 20}}>
+                            <button className='btn btn-primary btn-xs' onClick={logout}>Logout</button>
                         </div>
+                    </div>
 
-                        <div className='col-md-8'>
-                            <h3>Logged in as</h3>
-                            <h6>User: {userName}</h6>
-                            <h6>Email: {email}</h6>
-                            <h6>Name: {realName}</h6>
-                            {roleLabels}
-                        </div>
+                    <div className='col-md-8'>
+                        <h6>{realName} <small>({userName})</small></h6>
+                        <h6><small>{email}</small></h6>
+                        {roleLabels}
                     </div>
                 </div>
             </div>

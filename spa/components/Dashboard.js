@@ -18,11 +18,17 @@ class Dashboard extends Component {
             null;
 
         return (
-            <div className='container'>
-                <Header headerText='Dashboard' navigateToLink={this.props.navigateToLink} navPath={this.props.navPath} />
-                {userInfo}
-                {navigationLinks}
-                {subComponents}
+            <div className='container-fluid'>
+                <div className='row-fluid'>
+                    <div className='col-md-10'>
+                        <Header headerText='Dashboard' navigateToLink={this.props.navigateToLink} navPath={this.props.navPath} />
+                        {navigationLinks}
+                        {subComponents}
+                    </div>
+                    <div className='col-md-2 pull-right'>
+                        {userInfo}
+                    </div>
+                </div>
             </div>
         );
     }
