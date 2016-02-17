@@ -98,6 +98,18 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 	return []byte(tokenString), clientId, err
 }
 
+func logout(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	http.SetCookie(w, &http.Cookie{
+		Secure:   true,
+		HttpOnly: false,
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now().Add(-1 * time.Hour),
+	})
+
+	return
+}
+
 func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "GET" {
 		return errors.New("User info endpoint only accepts GET requests!")

@@ -37,6 +37,11 @@ export function requestToken(userLoginInfo) {
 export function logout() {
     return (dispatch) => {
         dispatch({type: LOGOUT});
+
+        request
+        .get('/logout')
+        .end();
+
         dispatch(routeActions.push('/login'));
     };
 }
