@@ -193,3 +193,20 @@ func updateUser(data *middlewareData, w http.ResponseWriter, req *http.Request) 
 
 	return updateUserInDb(&updatedUserData)
 }
+
+func updatePwd(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "POST" {
+		return errors.New("Update password endpoint only accepts POST requests!")
+	}
+
+	pwdData := struct {
+		NewPwd     string `json:"newPwd"`
+		UserId     string `json:"userId"`
+		CurrentPwd string `json:"currentPwd"`
+	}{}
+
+	decoder := json.NewDecoder(req.Body)
+	decoder.Decode(&pwdData)
+
+	return updateUserPwdInDb(pwdData.UserId, pwdData.NewPwd, pwdData.CurrentPwd)
+}

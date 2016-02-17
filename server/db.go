@@ -116,3 +116,32 @@ func updateUserInDb(userData *User) error {
 		"roles":    userData.Roles,
 	}})
 }
+
+func updateUserPwdInDb(userId, newPwd, currentPwd string) error {
+	if dbCollection == nil {
+		return errors.New("There is no connection to a database!")
+	}
+
+    result := User{}
+    err := dbCollection.Find(bson.M{"_id": bson.ObjectIdHex(userId)}).One(&result)
+
+    if err != nil {
+        return err
+    }
+
+    _, err = validateUserInDb(result.UserName, currentPwd)
+
+    if err != nil {
+        return err
+    }
+
+	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(newPwd), bcrypt.DefaultCost)
+
+	if err != nil {
+		return err
+	}
+
+	return dbCollection.Update(bson.M{"_id": bson.ObjectIdHex(userId)}, bson.M{"$set": bson.M{
+		"passwordhash": hashedPwd,
+	}})
+}

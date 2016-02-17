@@ -35,6 +35,7 @@ func main() {
 	http.Handle("/api/allUsers", handle(&middlewareData{}, printLog, ensureAuthentication, allUsers))
 	http.Handle("/api/deleteUser", handle(&middlewareData{}, printLog, ensureAuthentication, deleteUser))
 	http.Handle("/api/updateUser", handle(&middlewareData{}, printLog, ensureAuthentication, updateUser))
+	http.Handle("/api/updatePwd", handle(&middlewareData{}, printLog, ensureAuthentication, updatePwd))
 
 	err := http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
 

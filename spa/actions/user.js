@@ -95,3 +95,21 @@ export function updateUser(userData) {
         }
     };
 }
+
+export function updatePwd(newPwd, currentPwd, userId) {
+    return (dispatch, getState) => {
+        const {isAuthenticated, csrfToken} = getState().auth;
+
+        if(isAuthenticated) {
+            request
+            .post('/api/updatePwd')
+            .set('X-Csrf-token', csrfToken)
+            .send({
+                userId: userId,
+                newPwd: newPwd,
+                currentPwd: currentPwd
+            })
+            .end();
+        }
+    };
+}

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import ChangeUserPassword from './ChangeUserPassword';
 
 class EditUser extends React.Component {
     initState(props) {
@@ -74,6 +75,7 @@ class EditUser extends React.Component {
                         </div>
                     </div>
                 </form>
+                <ChangeUserPassword updatePasswd={this.props.updatePwd} />
             </div>
         );
     }
@@ -81,7 +83,8 @@ class EditUser extends React.Component {
 
 EditUser.propTypes = {
     user: PropTypes.object.isRequired,
-    updateUser: PropTypes.func.isRequired
+    updateUser: PropTypes.func.isRequired,
+    updatePwd: PropTypes.func.isRequired
 };
 
 export default EditUser;
