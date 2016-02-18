@@ -8,7 +8,8 @@ class ChangeUserPassword extends React.Component {
             currentPwd: null,
             newPwd: null,
             newPwdConfirm: null,
-            passwordsMatch: true
+            passwordsMatch: true,
+            pwdChangeSuccessIndicator: null
         };
     }
 
@@ -16,13 +17,21 @@ class ChangeUserPassword extends React.Component {
         const {newPwd, passwordsMatch, currentPwd} = this.state;
 
         if(passwordsMatch) {
-            this.props.updatePasswd(newPwd, currentPwd);
+            this.props.updatePasswd(newPwd, currentPwd, (success) => {
+                this.setState({pwdChangeSuccessIndicator: success});
+
+                setTimeout(() => this.setState({pwdChangeSuccessIndicator: null}), 5000);
+            });
         }
     }
 
     render () {
         const matchLabelClass = this.state.passwordsMatch ? 'label label-success' : 'label label-danger';
         const matchText = this.state.passwordsMatch ? 'Passwords match' : 'Passwords don\'t match';
+
+        const successIndicatorClass = this.state.pwdChangeSuccessIndicator ? 'label label-success' : 'label label-danger';
+        const successIndicatorText = this.state.pwdChangeSuccessIndicator ? 'Password successfully changed' : 'Password couldn\'t be changed';
+        const successIndicator = this.state.pwdChangeSuccessIndicator!==null ? <div className={successIndicatorClass} style={{marginLeft: 10}}>{successIndicatorText}</div> : null;
 
         return (
             <div>
@@ -51,12 +60,13 @@ class ChangeUserPassword extends React.Component {
                             })} />
                         </div>
                         <div className='col-sm-2'>
-                            <span className={matchLabelClass}>{matchText}</span>
+                            <div className={matchLabelClass}>{matchText}</div>
                         </div>
                     </div>
                     <div className='form-group'>
                         <div className='col-sm-offset-2 col-sm-10'>
                             <button type='button' className='btn btn-warning' onClick={() => this.updatePwd()}>Update password</button>
+                            {successIndicator}
                         </div>
                     </div>
                 </form>

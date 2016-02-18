@@ -96,7 +96,7 @@ export function updateUser(userData) {
     };
 }
 
-export function updatePwd(newPwd, currentPwd, userId) {
+export function updatePwd(newPwd, currentPwd, userId, successCb) {
     return (dispatch, getState) => {
         const {isAuthenticated, csrfToken} = getState().auth;
 
@@ -109,7 +109,14 @@ export function updatePwd(newPwd, currentPwd, userId) {
                 newPwd: newPwd,
                 currentPwd: currentPwd
             })
-            .end();
+            .end((err, res) => {
+                if(err || !res.ok) {
+                    successCb(false);
+                } else {
+                    const {success} = JSON.parse(res.text);
+                    successCb(success);
+                }
+            });
         }
     };
 }

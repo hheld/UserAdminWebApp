@@ -61,11 +61,12 @@ class ManageUsers extends React.Component {
             );
         });
 
-        const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} updateUser={this.props.updateUser} updatePwd={(newPwd, currentPwd) => this.props.updatePwd(newPwd, currentPwd, this.state.selectedUser.id)} /> : null;
+        const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} updateUser={this.props.updateUser} updatePwd={(newPwd, currentPwd, successCb) => this.props.updatePwd(newPwd, currentPwd, this.state.selectedUser.id, successCb)} /> : null;
 
         return (
             <div className='table-responsive'>
                 <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button>
+                <button className='btn btn-success btn-xs' onClick={() => this.props.addNewUser()} style={{marginLeft: 10}}>Add user</button>
                 <table className='table'>
                     <thead>
                         <tr>
@@ -92,7 +93,8 @@ ManageUsers.propTypes = {
     updateFromServer: PropTypes.func.isRequired,
     deleteUser: PropTypes.func.isRequired,
     updateUser: PropTypes.func.isRequired,
-    updatePwd: PropTypes.func.isRequired
+    updatePwd: PropTypes.func.isRequired,
+    addNewUser: PropTypes.func.isRequired
 };
 
 export default ManageUsers;

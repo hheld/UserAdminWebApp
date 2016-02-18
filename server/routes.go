@@ -208,5 +208,13 @@ func updatePwd(data *middlewareData, w http.ResponseWriter, req *http.Request) (
 	decoder := json.NewDecoder(req.Body)
 	decoder.Decode(&pwdData)
 
-	return updateUserPwdInDb(pwdData.UserId, pwdData.NewPwd, pwdData.CurrentPwd)
+	err = updateUserPwdInDb(pwdData.UserId, pwdData.NewPwd, pwdData.CurrentPwd)
+
+	json.NewEncoder(w).Encode(struct {
+		Success bool `json:"success"`
+	}{
+		Success: err == nil,
+	})
+
+	return
 }

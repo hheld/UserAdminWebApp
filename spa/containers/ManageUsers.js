@@ -14,7 +14,8 @@ function mapDispatchToProps(dispatch) {
         updateFromServer: () => dispatch(getAllUsers()),
         deleteUser: (userId) => dispatch(deleteUser(userId)),
         updateUser: (userData) => dispatch(updateUser(userData)),
-        updatePwd: (newPwd, currentPwd, userId) => dispatch(updatePwd(newPwd, currentPwd, userId))
+        updatePwd: (newPwd, currentPwd, userId, successCb) => dispatch(updatePwd(newPwd, currentPwd, userId, successCb)),
+        addNewUser: (newUserInfo) => console.log('would add new user', newUserInfo)
     };
 }
 
