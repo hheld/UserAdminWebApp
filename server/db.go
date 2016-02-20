@@ -64,6 +64,24 @@ func addNewUser(userName, pwd, email, realName string) error {
 	return dbCollection.Insert(&newUser)
 }
 
+func addUserToDb(userName, pwd, email, realName string, roles []string) error {
+	hashedPwd, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
+
+	if err != nil {
+		return err
+	}
+
+	newUser := User{
+		Email:        email,
+		UserName:     userName,
+		RealName:     realName,
+		PasswordHash: hashedPwd,
+		Roles:        roles,
+	}
+
+	return dbCollection.Insert(&newUser)
+}
+
 func validateUserInDb(userName, password string) (userInfo *User, err error) {
 	if dbCollection == nil {
 		err = errors.New("There is no connection to a database!")

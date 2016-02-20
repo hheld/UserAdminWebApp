@@ -1,4 +1,5 @@
 import request from 'superagent';
+import { routeActions } from 'react-router-redux';
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const SET_AVAILABLE_USERS = 'SET_AVAILABLE_USERS';
@@ -19,29 +20,35 @@ export function setAvailableUsers(users) {
 
 export function getUserInfo() {
     return (dispatch, getState) => {
-        const {isAuthenticated, csrfToken} = getState().auth;
+        return new Promise((resolve, reject) => {
+            const {isAuthenticated, csrfToken} = getState().auth;
 
-        if(isAuthenticated) {
-            request
-            .get('/api/userInfo')
-            .set('X-Csrf-token', csrfToken)
-            .end(function(err, res) {
-                if(err || !res.ok) {
-                    dispatch(setCurrentUser({}));
-                } else {
-                    const currentUser = JSON.parse(res.text);
-                    dispatch(setCurrentUser(currentUser));
-
-                    if(currentUser.roles.indexOf('admin')!==-1) {
-                        dispatch(getAllUsers());
+            if(isAuthenticated) {
+                request
+                .get('/api/userInfo')
+                .set('X-Csrf-token', csrfToken)
+                .end(function(err, res) {
+                    if(err || !res.ok) {
+                        dispatch(setCurrentUser({}));
+                        reject();
                     } else {
-                        dispatch(setAvailableUsers([currentUser]));
+                        const currentUser = JSON.parse(res.text);
+                        dispatch(setCurrentUser(currentUser));
+
+                        if(currentUser.roles.indexOf('admin')!==-1) {
+                            dispatch(getAllUsers());
+                        } else {
+                            dispatch(setAvailableUsers([currentUser]));
+                        }
+
+                        resolve();
                     }
-                }
-            });
-        } else {
-            dispatch(setCurrentUser({}));
-        }
+                });
+            } else {
+                dispatch(setCurrentUser({}));
+                reject();
+            }
+        });
     };
 }
 
@@ -121,6 +128,25 @@ export function updatePwd(newPwd, currentPwd, userId, successCb) {
                 } else {
                     const {success} = JSON.parse(res.text);
                     successCb(success);
+                }
+            });
+        }
+    };
+}
+
+export function addNewUser(newUserInfo) {
+    return (dispatch, getState) => {
+        const {isAuthenticated, csrfToken} = getState().auth;
+
+        if(isAuthenticated) {
+            request
+            .post('/api/addUser')
+            .set('X-Csrf-token', csrfToken)
+            .send(newUserInfo)
+            .end((err) => {
+                if(!err) {
+                    dispatch(routeActions.goBack());
+                    dispatch(getAllUsers());
                 }
             });
         }

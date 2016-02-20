@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import ManageUsers from '../components/ManageUsers';
 import { getAllUsers, deleteUser, updateUser, updatePwd } from '../actions/user';
+import { routeActions } from 'react-router-redux';
 
 function mapStateToProps(state) {
     return {
@@ -15,7 +16,7 @@ function mapDispatchToProps(dispatch) {
         deleteUser: (userId) => dispatch(deleteUser(userId)),
         updateUser: (userData) => dispatch(updateUser(userData)),
         updatePwd: (newPwd, currentPwd, userId, successCb) => dispatch(updatePwd(newPwd, currentPwd, userId, successCb)),
-        addNewUser: (newUserInfo) => console.log('would add new user', newUserInfo)
+        addNewUser: () => dispatch(routeActions.push('/admin/manageUsers/addUser'))
     };
 }
 

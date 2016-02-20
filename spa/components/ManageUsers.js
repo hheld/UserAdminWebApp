@@ -65,7 +65,8 @@ class ManageUsers extends React.Component {
         const updateButton = currentUserIsAdmin ? <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button> : null;
         const addUserButton = currentUserIsAdmin ? <button className='btn btn-success btn-xs' onClick={() => this.props.addNewUser()} style={{marginLeft: 10}}>Add user</button> : null;
 
-        return (
+        const hasChildren = this.props.children !== null;
+        const content = hasChildren ? this.props.children : (
             <div className='table-responsive'>
                 {updateButton}
                 {addUserButton}
@@ -84,6 +85,11 @@ class ManageUsers extends React.Component {
                     </tbody>
                 </table>
                 {userEditor}
+            </div>);
+
+        return (
+            <div>
+                {content}
             </div>
         );
     }

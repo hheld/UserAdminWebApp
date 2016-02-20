@@ -218,3 +218,22 @@ func updatePwd(data *middlewareData, w http.ResponseWriter, req *http.Request) (
 
 	return
 }
+
+func addUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	if req.Method != "POST" {
+		return errors.New("Add user endpoint only accepts POST requests!")
+	}
+
+	userData := struct {
+		UserName string   `json:"userName`
+		RealName string   `json:"realName"`
+		Roles    []string `json:"roles"`
+		Email    string   `json:"email"`
+		Password string   `json:"password"`
+	}{}
+
+	decoder := json.NewDecoder(req.Body)
+	decoder.Decode(&userData)
+
+	return addUserToDb(userData.UserName, userData.Password, userData.Email, userData.RealName, userData.Roles)
+}
