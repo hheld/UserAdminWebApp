@@ -8,7 +8,7 @@ class Header extends React.Component {
 
         const navItems = navigateToLink && navPath ? paths.map((link, idx) => {
             return numOfPaths-1===idx ? <li key={idx}>{link}</li>
-            : <li key={idx}><a role='button' onClick={() => navigateToLink('/'+link)}>{link}</a></li>;
+        : <li key={idx}><a role='button' onClick={() => navigateToLink('/'+paths.slice(0,idx+1).join('/'))}>{link}</a></li>;
         }) : null;
 
         const navBar = navItems ? <ol className="breadcrumb">
