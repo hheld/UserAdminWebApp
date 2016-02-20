@@ -62,11 +62,13 @@ class ManageUsers extends React.Component {
         });
 
         const userEditor = this.state.selectedUser ? <EditUser user={this.state.selectedUser} updateUser={this.props.updateUser} updatePwd={(newPwd, currentPwd, successCb) => this.props.updatePwd(newPwd, currentPwd, this.state.selectedUser.id, successCb)} /> : null;
+        const updateButton = currentUserIsAdmin ? <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button> : null;
+        const addUserButton = currentUserIsAdmin ? <button className='btn btn-success btn-xs' onClick={() => this.props.addNewUser()} style={{marginLeft: 10}}>Add user</button> : null;
 
         return (
             <div className='table-responsive'>
-                <button className='btn btn-warning btn-xs' onClick={() => this.props.updateFromServer()}>Update</button>
-                <button className='btn btn-success btn-xs' onClick={() => this.props.addNewUser()} style={{marginLeft: 10}}>Add user</button>
+                {updateButton}
+                {addUserButton}
                 <table className='table'>
                     <thead>
                         <tr>

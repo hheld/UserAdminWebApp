@@ -29,7 +29,14 @@ export function getUserInfo() {
                 if(err || !res.ok) {
                     dispatch(setCurrentUser({}));
                 } else {
-                    dispatch(setCurrentUser(JSON.parse(res.text)));
+                    const currentUser = JSON.parse(res.text);
+                    dispatch(setCurrentUser(currentUser));
+
+                    if(currentUser.roles.indexOf('admin')!==-1) {
+                        dispatch(getAllUsers());
+                    } else {
+                        dispatch(setAvailableUsers([currentUser]));
+                    }
                 }
             });
         } else {
