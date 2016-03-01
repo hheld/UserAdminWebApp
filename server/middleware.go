@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-type middlewareData struct {
+type MiddlewareData struct {
 	UserName string   `json:"userName"`
 	Email    string   `json:"email"`
 	RealName string   `json:"realName"`
@@ -23,9 +23,9 @@ type middlewareData struct {
 	Id       string   `json:"id"`
 }
 
-type handler func(data *middlewareData, w http.ResponseWriter, r *http.Request) error
+type handler func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error
 
-func handle(data *middlewareData, handlers ...handler) http.Handler {
+func handle(data *MiddlewareData, handlers ...handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for _, handler := range handlers {
 			err := handler(data, w, r)
@@ -37,7 +37,7 @@ func handle(data *middlewareData, handlers ...handler) http.Handler {
 	})
 }
 
-func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func ensureAuthentication(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	tokenStr, err := req.Cookie("token")
 
 	if err != nil {
@@ -104,13 +104,13 @@ func ensureAuthentication(data *middlewareData, w http.ResponseWriter, req *http
 	return
 }
 
-func printLog(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func printLog(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	log.Printf("%s %s", req.URL, req.RemoteAddr)
 	return
 }
 
 func serveFilesFromDir(directory string) handler {
-	return func(data *middlewareData, w http.ResponseWriter, r *http.Request) error {
+	return func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
 		htmlIndexFile := fmt.Sprintf("%s/index.html", directory)
 		requestedFileCandidate := fmt.Sprintf("%s/%s", directory, r.URL.Path[1:])
 

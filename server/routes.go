@@ -17,7 +17,7 @@ import (
 
 const secretString = "putyoursecretstringhere"
 
-func token(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func token(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "POST" {
 		err = errors.New("Token endpoint only accepts POST requests!")
 		return
@@ -98,7 +98,7 @@ func generateToken(userInfo *User) ([]byte, string, error) {
 	return []byte(tokenString), clientId, err
 }
 
-func logout(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func logout(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	http.SetCookie(w, &http.Cookie{
 		Secure:   true,
 		HttpOnly: false,
@@ -110,7 +110,7 @@ func logout(data *middlewareData, w http.ResponseWriter, req *http.Request) (err
 	return
 }
 
-func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func userInfo(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "GET" {
 		return errors.New("User info endpoint only accepts GET requests!")
 	}
@@ -122,7 +122,7 @@ func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 		return
 	}
 
-	userInfoData := middlewareData{
+	userInfoData := MiddlewareData{
 		Email:    result.Email,
 		UserName: result.UserName,
 		RealName: result.RealName,
@@ -133,7 +133,7 @@ func userInfo(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 	return json.NewEncoder(w).Encode(userInfoData)
 }
 
-func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func allUsers(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "GET" {
 		return errors.New("All users endpoint only accepts GET requests!")
 	}
@@ -145,7 +145,7 @@ func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 	}
 
 	numOfUsers := len(users)
-	userData := make([]middlewareData, numOfUsers)
+	userData := make([]MiddlewareData, numOfUsers)
 
 	for idx, user := range users {
 		userData[idx].Email = user.Email
@@ -158,7 +158,7 @@ func allUsers(data *middlewareData, w http.ResponseWriter, req *http.Request) (e
 	return json.NewEncoder(w).Encode(userData)
 }
 
-func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func deleteUser(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "POST" {
 		return errors.New("Delete user endpoint only accepts POST requests!")
 	}
@@ -173,12 +173,12 @@ func deleteUser(data *middlewareData, w http.ResponseWriter, req *http.Request) 
 	return deleteUserFromDb(ud.UserId)
 }
 
-func updateUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func updateUser(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "POST" {
 		return errors.New("Update user endpoint only accepts POST requests!")
 	}
 
-	userData := middlewareData{}
+	userData := MiddlewareData{}
 
 	decoder := json.NewDecoder(req.Body)
 	decoder.Decode(&userData)
@@ -194,7 +194,7 @@ func updateUser(data *middlewareData, w http.ResponseWriter, req *http.Request) 
 	return updateUserInDb(&updatedUserData)
 }
 
-func updatePwd(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func updatePwd(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "POST" {
 		return errors.New("Update password endpoint only accepts POST requests!")
 	}
@@ -219,7 +219,7 @@ func updatePwd(data *middlewareData, w http.ResponseWriter, req *http.Request) (
 	return
 }
 
-func addUser(data *middlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+func addUser(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
 	if req.Method != "POST" {
 		return errors.New("Add user endpoint only accepts POST requests!")
 	}

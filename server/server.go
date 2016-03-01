@@ -3,14 +3,20 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/hashicorp/go-plugin"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 )
 
 func main() {
-	defer func() {
+	cleanup := func() {
 		dbSession.Close()
-	}()
+		plugin.CleanupClients()
+	}
+
+	defer cleanup()
 
 	flag.Parse()
 
@@ -31,12 +37,20 @@ func main() {
 	http.Handle("/token", handle(nil, printLog, token))
 	http.Handle("/logout", handle(nil, printLog, logout))
 
-	http.Handle("/api/userInfo", handle(&middlewareData{}, printLog, ensureAuthentication, userInfo))
-	http.Handle("/api/allUsers", handle(&middlewareData{}, printLog, ensureAuthentication, allUsers))
-	http.Handle("/api/deleteUser", handle(&middlewareData{}, printLog, ensureAuthentication, deleteUser))
-	http.Handle("/api/updateUser", handle(&middlewareData{}, printLog, ensureAuthentication, updateUser))
-	http.Handle("/api/updatePwd", handle(&middlewareData{}, printLog, ensureAuthentication, updatePwd))
-	http.Handle("/api/addUser", handle(&middlewareData{}, printLog, ensureAuthentication, addUser))
+	http.Handle("/api/userInfo", handle(&MiddlewareData{}, printLog, ensureAuthentication, userInfo))
+	http.Handle("/api/allUsers", handle(&MiddlewareData{}, printLog, ensureAuthentication, allUsers))
+	http.Handle("/api/deleteUser", handle(&MiddlewareData{}, printLog, ensureAuthentication, deleteUser))
+	http.Handle("/api/updateUser", handle(&MiddlewareData{}, printLog, ensureAuthentication, updateUser))
+	http.Handle("/api/updatePwd", handle(&MiddlewareData{}, printLog, ensureAuthentication, updatePwd))
+	http.Handle("/api/addUser", handle(&MiddlewareData{}, printLog, ensureAuthentication, addUser))
+
+	go func() {
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, os.Interrupt)
+		<-c
+		cleanup()
+		os.Exit(1)
+	}()
 
 	err := http.ListenAndServeTLS(":10443", "cert.pem", "key.pem", nil)
 
