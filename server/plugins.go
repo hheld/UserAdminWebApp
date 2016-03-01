@@ -4,7 +4,6 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/hashicorp/go-plugin"
-	//"io/ioutil"
 	"errors"
 	"log"
 	"net/http"
@@ -87,8 +86,6 @@ func init() {
 	routePlugins, _ := plugin.Discover("Server_*_plugin", "./plugins")
 
 	for _, routePlugin := range routePlugins {
-		//log.SetOutput(ioutil.Discard)
-
 		client := plugin.NewClient(&plugin.ClientConfig{
 			HandshakeConfig: handshakeConfig,
 			Plugins:         pluginMap,
