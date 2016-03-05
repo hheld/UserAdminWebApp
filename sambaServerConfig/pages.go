@@ -8,6 +8,6 @@ const mainPage = `
 		<title>Samba configuration</title>
 	</head>
 	<body>
-		<p>Hello from Samba plugin.</p>
+		<p>Hello from Samba plugin. {{.Method}}</p>
 	</body>
 </html>`

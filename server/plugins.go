@@ -24,7 +24,7 @@ var pluginMap = map[string]plugin.Plugin{
 var pluginNames []string = make([]string, 0)
 
 type AdditionalServerRouteHandler interface {
-	Handler(data *MiddlewareData, path string) ([]byte, string)
+	Handler(data *MiddlewareData, path, method string) ([]byte, string)
 	Name() string
 }
 
@@ -41,8 +41,9 @@ func (ServerRoutePlugin) Server(*plugin.MuxBroker) (interface{}, error) {
 type ServerRouteRPC struct{ client *rpc.Client }
 
 type Args struct {
-	Data *MiddlewareData
-	Path string
+	Data   *MiddlewareData
+	Path   string
+	Method string
 }
 
 type Resp struct {
@@ -50,10 +51,11 @@ type Resp struct {
 	ErrMsg string
 }
 
-func (sr *ServerRouteRPC) Handler(data *MiddlewareData, path string) ([]byte, string) {
+func (sr *ServerRouteRPC) Handler(data *MiddlewareData, path, method string) ([]byte, string) {
 	var i interface{} = &Args{
-		Data: data,
-		Path: path,
+		Data:   data,
+		Path:   path,
+		Method: method,
 	}
 
 	var r Resp = Resp{
@@ -112,7 +114,7 @@ func init() {
 		fmt.Println("Found plugin with name", pluginName)
 
 		handlerFunc := func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
-			resp, err := pluginInstance.Handler(data, r.URL.Path)
+			resp, err := pluginInstance.Handler(data, r.URL.Path, r.Method)
 
 			if err != "" {
 				fmt.Printf("error: %+v\n", err)

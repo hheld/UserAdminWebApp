@@ -34,7 +34,7 @@ type ServerRouteRPCServer struct {
 
 func (s *ServerRouteRPCServer) Handler(args interface{}, resp *Resp) error {
 	actualArgs := args.(Args)
-	resp.Resp, resp.ErrMsg = s.Impl.Handler(actualArgs.Data, actualArgs.Path)
+	resp.Resp, resp.ErrMsg = s.Impl.Handler(actualArgs.Data, actualArgs.Path, actualArgs.Method)
 	return nil
 }
 
@@ -44,8 +44,9 @@ func (s *ServerRouteRPCServer) Name(args interface{}, resp *string) error {
 }
 
 type Args struct {
-	Data *MiddlewareData
-	Path string
+	Data   *MiddlewareData
+	Path   string
+	Method string
 }
 
 type Resp struct {
@@ -54,13 +55,13 @@ type Resp struct {
 }
 
 type AdditionalServerRouteHandler interface {
-	Handler(data *MiddlewareData, path string) ([]byte, string)
+	Handler(data *MiddlewareData, path, method string) ([]byte, string)
 	Name() string
 }
 
 type Implementation struct{}
 
-func (Implementation) Handler(data *MiddlewareData, path string) ([]byte, string) {
+func (Implementation) Handler(data *MiddlewareData, path, method string) ([]byte, string) {
 	t, err := template.New("plugin").Parse(mainPage)
 
 	if err != nil {
@@ -68,7 +69,7 @@ func (Implementation) Handler(data *MiddlewareData, path string) ([]byte, string
 	}
 
 	var doc bytes.Buffer
-	t.Execute(&doc, nil)
+	t.Execute(&doc, struct{ Method string }{Method: method})
 
 	return doc.Bytes(), ""
 }
