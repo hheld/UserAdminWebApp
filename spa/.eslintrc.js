@@ -26,12 +26,16 @@ module.exports = {
         "browser": true
     },
     "extends": "eslint:recommended",
-    "ecmaFeatures": {
-        "jsx": true,
-        "experimentalObjectRestSpread": true,
-        "modules": true
-    },
     "plugins": [
         "react"
-    ]
+    ],
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    }
 };
