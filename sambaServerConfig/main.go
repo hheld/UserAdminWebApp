@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"encoding/gob"
 	"github.com/hashicorp/go-plugin"
+	"html/template"
 	"net/rpc"
 )
 
@@ -59,7 +61,16 @@ type AdditionalServerRouteHandler interface {
 type Implementation struct{}
 
 func (Implementation) Handler(data *MiddlewareData, path string) ([]byte, string) {
-	return []byte("I'm from the Samba plugin: " + path), ""
+	t, err := template.New("plugin").Parse(mainPage)
+
+	if err != nil {
+		return nil, err.Error()
+	}
+
+	var doc bytes.Buffer
+	t.Execute(&doc, nil)
+
+	return doc.Bytes(), ""
 }
 
 func (Implementation) Name() string {

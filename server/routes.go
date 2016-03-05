@@ -237,3 +237,11 @@ func addUser(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (er
 
 	return addUserToDb(userData.UserName, userData.Password, userData.Email, userData.RealName, userData.Roles)
 }
+
+func pluginLinks(data *MiddlewareData, w http.ResponseWriter, req *http.Request) (err error) {
+	return json.NewEncoder(w).Encode(struct {
+		AvailablePlugins []string `json:"plugins"`
+	}{
+		AvailablePlugins: pluginNames,
+	})
+}

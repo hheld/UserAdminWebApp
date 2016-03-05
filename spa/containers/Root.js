@@ -1,18 +1,23 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
+
 import Login from './Login';
 import Dashboard from './Dashboard';
 import ManageUsers from './ManageUsers';
 import AddUser from './AddUser';
+import Plugins from './Plugins';
+
 import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route } from 'react-router';
 import { getUserInfo } from '../actions/user';
+import { getAvailablePlugins } from '../actions/plugins';
 
 const store = configureStore();
 const history = browserHistory;
 
 // dispatch initial actions
 const userInfoPromise = store.dispatch(getUserInfo()).catch(() => {});
+const pluginsPromise = store.dispatch(getAvailablePlugins()).catch(() => {});
 
 const requireAuth = (store) => {
     return (nextState, replaceState) => {
@@ -44,6 +49,11 @@ export default class Root extends Component {
                                     });
                                 }} />
                             </Route>
+                            <Route path='plugins' getComponent={(loc, cb) => {
+                                pluginsPromise.then(() => {
+                                    cb(null, Plugins);
+                                });
+                            }} />
                         </Route>
                     </Route>
                 </Router>

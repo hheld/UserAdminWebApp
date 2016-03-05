@@ -10,7 +10,10 @@ class Dashboard extends Component {
         const subComponents = this.props.children;
 
         const navigationLinks = subComponents ? null :
-                <a role='button' onClick={() => this.props.navigateToLink('/admin/manageUsers')}>Manage users</a>
+        <div className='list-group'>
+            <a role='button' className='list-group-item' onClick={() => this.props.navigateToLink('/admin/manageUsers')}>Manage users</a>
+            <a role='button' className='list-group-item' onClick={() => this.props.navigateToLink('/admin/plugins')}>Plugins</a>
+        </div>
         ;
 
         const userInfo = userName!==undefined && realName!==undefined && email!==undefined && roles!==undefined && id!==undefined ?

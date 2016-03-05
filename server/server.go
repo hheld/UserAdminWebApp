@@ -36,6 +36,7 @@ func main() {
 	http.Handle("/", handle(nil, printLog, serveFilesFromDir("client")))
 	http.Handle("/token", handle(nil, printLog, token))
 	http.Handle("/logout", handle(nil, printLog, logout))
+	http.Handle("/pluginLinks", handle(nil, printLog, pluginLinks))
 
 	http.Handle("/api/userInfo", handle(&MiddlewareData{}, printLog, ensureAuthentication, userInfo))
 	http.Handle("/api/allUsers", handle(&MiddlewareData{}, printLog, ensureAuthentication, allUsers))

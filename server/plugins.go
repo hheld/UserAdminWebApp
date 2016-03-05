@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"github.com/hashicorp/go-plugin"
-	"errors"
 	"log"
 	"net/http"
 	"net/rpc"
@@ -20,6 +20,8 @@ var handshakeConfig = plugin.HandshakeConfig{
 var pluginMap = map[string]plugin.Plugin{
 	"routeHandlers": new(ServerRoutePlugin),
 }
+
+var pluginNames []string = make([]string, 0)
 
 type AdditionalServerRouteHandler interface {
 	Handler(data *MiddlewareData, path string) ([]byte, string)
@@ -105,7 +107,9 @@ func init() {
 
 		pluginInstance := rawPlugin.(AdditionalServerRouteHandler)
 
-		fmt.Println("Found plugin with name", pluginInstance.Name())
+		pluginName := pluginInstance.Name()
+
+		fmt.Println("Found plugin with name", pluginName)
 
 		handlerFunc := func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
 			resp, err := pluginInstance.Handler(data, r.URL.Path)
@@ -122,7 +126,8 @@ func init() {
 			return nil
 		}
 
-		http.Handle("/samba", handle(nil, printLog, handlerFunc))
+		pluginNames = append(pluginNames, pluginName)
+		http.Handle("/plugin/"+pluginName, handle(nil, printLog, handlerFunc))
 	}
 
 	if len(routePlugins) == 0 {
