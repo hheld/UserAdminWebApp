@@ -3,7 +3,8 @@ import Plugins from '../components/Plugins';
 
 function mapStateToProps(state) {
     return {
-        plugins: state.plugins.plugins
+        pluginNames: state.plugins.pluginNames,
+        pluginPages: state.plugins.pluginPages
     };
 }
 

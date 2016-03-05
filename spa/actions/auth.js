@@ -1,6 +1,7 @@
 import request from 'superagent';
 import { routeActions } from 'react-router-redux';
 import { getUserInfo, getAllUsers } from './user';
+import { getPluginPage } from './plugins';
 
 export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const LOGOUT = 'LOGOUT';
@@ -26,6 +27,10 @@ export function requestToken(userLoginInfo) {
                     dispatch(routeActions.push(action));
                     dispatch(getUserInfo());
                     dispatch(getAllUsers());
+
+                    getState().plugins.pluginNames.forEach((plugin) => {
+                        dispatch(getPluginPage(plugin));
+                    });
                 }
             });
         } else {

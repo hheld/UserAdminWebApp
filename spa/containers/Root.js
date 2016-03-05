@@ -11,13 +11,21 @@ import configureStore, {browserHistory} from '../store/configureStore';
 import { Router, Route } from 'react-router';
 import { getUserInfo } from '../actions/user';
 import { getAvailablePlugins } from '../actions/plugins';
+import { getPluginPage } from '../actions/plugins';
 
 const store = configureStore();
 const history = browserHistory;
 
 // dispatch initial actions
 const userInfoPromise = store.dispatch(getUserInfo()).catch(() => {});
-const pluginsPromise = store.dispatch(getAvailablePlugins()).catch(() => {});
+const pluginsPromise = store.dispatch(getAvailablePlugins()).catch(() => {})
+.then(() => {
+    const pluginNames = store.getState().plugins.pluginNames;
+
+    pluginNames.forEach((plugin) => {
+        store.dispatch(getPluginPage(plugin));
+    });
+});
 
 const requireAuth = (store) => {
     return (nextState, replaceState) => {

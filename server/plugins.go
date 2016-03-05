@@ -129,7 +129,7 @@ func init() {
 		}
 
 		pluginNames = append(pluginNames, pluginName)
-		http.Handle("/plugin/"+pluginName, handle(nil, printLog, handlerFunc))
+		http.Handle("/plugin/"+pluginName, handle(&MiddlewareData{}, printLog, ensureAuthentication, handlerFunc))
 	}
 
 	if len(routePlugins) == 0 {

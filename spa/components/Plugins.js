@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 
 class Plugins extends React.Component {
     render() {
-        const {plugins} = this.props;
+        const {pluginNames, pluginPages} = this.props;
 
-        const pluginPages = plugins.map((plugin, idx) => {
+        const pluginMainPages = pluginNames.map((plugin, idx) => {
             return (
                 <div className='panel panel-default' key={idx}>
                     <div className='panel-heading'>
@@ -12,7 +12,7 @@ class Plugins extends React.Component {
                     </div>
                     <div className='panel-content'>
                         <div style={{overflow: 'hidden'}}>
-                            <iframe src={'/plugin/'+plugin} frameBorder='0' style={{width: '100%'}}></iframe>
+                            <iframe srcDoc={pluginPages[plugin]} frameBorder='0' style={{width: '100%'}}></iframe>
                         </div>
                     </div>
                 </div>
@@ -21,14 +21,15 @@ class Plugins extends React.Component {
 
         return (
             <div className='container-fluid'>
-                {pluginPages}
+                {pluginMainPages}
             </div>
         );
     }
 }
 
 Plugins.propTypes = {
-    plugins: PropTypes.array.isRequired
+    pluginNames: PropTypes.array.isRequired,
+    pluginPages: PropTypes.object.isRequired
 };
 
 export default Plugins;
