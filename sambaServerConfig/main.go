@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"github.com/hashicorp/go-plugin"
 	"net/rpc"
+	"net/url"
 )
 
 var handshakeConfig = plugin.HandshakeConfig{
@@ -32,7 +33,7 @@ type ServerRouteRPCServer struct {
 
 func (s *ServerRouteRPCServer) Handler(args interface{}, resp *Resp) error {
 	actualArgs := args.(Args)
-	resp.Resp, resp.ErrMsg = s.Impl.Handler(actualArgs.Data, actualArgs.Path, actualArgs.Method)
+	resp.Resp, resp.ErrMsg = s.Impl.Handler(actualArgs.Data, actualArgs.Path, actualArgs.Method, actualArgs.FormData)
 	return nil
 }
 
@@ -42,9 +43,10 @@ func (s *ServerRouteRPCServer) Name(args interface{}, resp *string) error {
 }
 
 type Args struct {
-	Data   *MiddlewareData
-	Path   string
-	Method string
+	Data     *MiddlewareData
+	Path     string
+	Method   string
+	FormData url.Values
 }
 
 type Resp struct {
@@ -53,7 +55,7 @@ type Resp struct {
 }
 
 type AdditionalServerRouteHandler interface {
-	Handler(data *MiddlewareData, path, method string) ([]byte, string)
+	Handler(data *MiddlewareData, path, method string, formData url.Values) ([]byte, string)
 	Name() string
 }
 
