@@ -81,7 +81,7 @@ gulp.task('copyCss', function() {
 });
 
 gulp.task('copyBootstrap', function() {
-  gulp.src('./node_modules/bootstrap/dist/css/bootstrap.min.css')
+  gulp.src(['./node_modules/bootstrap/dist/css/bootstrap.min.css', './node_modules/bootstrap/dist/css/bootstrap.min.css.map'])
       .pipe(gulp.dest(path.DEST + '/css'));
 });
 

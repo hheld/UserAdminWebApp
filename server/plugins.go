@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/gob"
-	"errors"
+	//"errors"
 	"fmt"
 	"github.com/hashicorp/go-plugin"
 	"log"
@@ -116,24 +116,14 @@ func init() {
 
 		fmt.Println("Found plugin with name", pluginName)
 
-		handlerFunc := func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
-			r.ParseForm()
-			resp, err := pluginInstance.Handler(data, r.URL.Path, r.Method, r.Form)
+		pluginNames = append(pluginNames, pluginName)
 
-			if err != "" {
-				fmt.Printf("error: %+v\n", err)
-			}
-			w.Write(resp)
-
-			if err != "" {
-				return errors.New(err)
-			}
-
+		pluginHandlerFunc := func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
+			http.StripPrefix("/plugin/"+pluginName+"/", http.FileServer(http.Dir("./plugins/dist"))).ServeHTTP(w, r)
 			return nil
 		}
 
-		pluginNames = append(pluginNames, pluginName)
-		http.Handle("/plugin/"+pluginName, handle(&MiddlewareData{}, printLog, ensureAuthentication, handlerFunc))
+		http.Handle("/plugin/"+pluginName+"/", handle(&MiddlewareData{}, printLog, ensureAuthentication, pluginHandlerFunc))
 	}
 
 	if len(routePlugins) == 0 {
