@@ -18,7 +18,13 @@ func (Implementation) Handler(data *MiddlewareData, path, method string, formDat
 	}
 
 	var doc bytes.Buffer
-	t.Execute(&doc, struct{ Method string }{Method: method})
+	t.Execute(&doc, struct {
+		Method  string
+		JsFuncs []template.JS
+	}{
+		Method:  method,
+		JsFuncs: []template.JS{jsGetCsrfToken, jsSendFormValuesAndUpdateDoc},
+	})
 
 	return doc.Bytes(), ""
 }

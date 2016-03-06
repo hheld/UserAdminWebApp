@@ -8,7 +8,7 @@ const mainPage = `
 		<title>Samba configuration</title>
 	</head>
 	<body>
-		<p>Hello from Samba plugin. {{.Method}}</p>
+		<p>Hello from Samba plugin. {{ .Method }}</p>
 		<form id="form_2">
             <label id="h2" form="form_2">Namenseingabe</label>
             <label for="vorname">Vorname</label>
@@ -17,31 +17,20 @@ const mainPage = `
             <label for="zuname">Zuname</label>
             <input type="text" id="zuname" maxlength="40">
 
-            <button type="button" onClick="sendFormData()">Eingaben absenden</button>
+            <button type="button" onClick="onSubmitClicked()">Eingaben absenden</button>
         </form>
 
         <script>
-            function getCsrfToken() {
-               var result = /(?:^Csrf-token|;\s*Csrf-token)=(.*?)(?:;|$)/g.exec(document.cookie);
-               return (result === null) ? null : result[1];
-            }
+            {{ range .JsFuncs }}{{ . }}{{ end }}
 
-            function sendFormData() {
-                var csrfToken = getCsrfToken();
-                var xhttp = new XMLHttpRequest();
+            function onSubmitClicked() {
+                var vn = document.getElementById('vorname').value;
+                var nn = document.getElementById('zuname').value;
 
-                xhttp.open("POST", "/plugin/SambaConfig", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.setRequestHeader("X-Csrf-token", csrfToken);
-                xhttp.send("vorname=TEST_VORNAME&nachname=TEST_NACHNAME");
-
-                xhttp.onreadystatechange = function() {
-                    if(xhttp.readyState == 4 && xhttp.status == 200) {
-                        document.open();
-                        document.write(xhttp.responseText);
-                        document.close();
-                    }
-                }
+                sendFormData({
+                    firstName: vn,
+                    lastName: nn
+                });
             }
         </script>
 	</body>
