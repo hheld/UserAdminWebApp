@@ -37,7 +37,9 @@ const mainPage = `
 
                 xhttp.onreadystatechange = function() {
                     if(xhttp.readyState == 4 && xhttp.status == 200) {
+                        document.open();
                         document.write(xhttp.responseText);
+                        document.close();
                     }
                 }
             }
