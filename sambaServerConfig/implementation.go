@@ -1,12 +1,10 @@
 package main
 
-import (
-	"net/url"
-)
+import ()
 
 type Implementation struct{}
 
-func (Implementation) Handler(data *MiddlewareData, path, method string, formData url.Values) ([]byte, string) {
+func (Implementation) Handler(data *MiddlewareData, path, method, jsonData string) ([]byte, string) {
 	return []byte("Hello from SambaPlugin"), ""
 }
 

@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/gob"
-	//"errors"
+	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/go-plugin"
+	"github.com/juju/errors"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/rpc"
-	"net/url"
 	"os/exec"
 )
 
@@ -25,7 +26,7 @@ var pluginMap = map[string]plugin.Plugin{
 var pluginNames []string = make([]string, 0)
 
 type AdditionalServerRouteHandler interface {
-	Handler(data *MiddlewareData, path, method string, formData url.Values) ([]byte, string)
+	ApiHandler(data *MiddlewareData, path, method, jsonData string) ([]byte, string)
 	Name() string
 }
 
@@ -45,7 +46,7 @@ type Args struct {
 	Data     *MiddlewareData
 	Path     string
 	Method   string
-	FormData url.Values
+	JSONData string
 }
 
 type Resp struct {
@@ -53,12 +54,12 @@ type Resp struct {
 	ErrMsg string
 }
 
-func (sr *ServerRouteRPC) Handler(data *MiddlewareData, path, method string, formData url.Values) ([]byte, string) {
+func (sr *ServerRouteRPC) ApiHandler(data *MiddlewareData, path, method, jsonData string) ([]byte, string) {
 	var i interface{} = &Args{
 		Data:     data,
 		Path:     path,
 		Method:   method,
-		FormData: formData,
+		JSONData: jsonData,
 	}
 
 	var r Resp = Resp{
@@ -123,7 +124,25 @@ func init() {
 			return nil
 		}
 
+		apiHandlerFunc := func(data *MiddlewareData, w http.ResponseWriter, r *http.Request) error {
+			body, err := ioutil.ReadAll(r.Body)
+
+			if err != nil {
+				return err
+			}
+
+			jsonResponse, errMsg := pluginInstance.ApiHandler(data, r.URL.Path, r.Method, string(body))
+
+			if errMsg != "" {
+				return errors.New(errMsg)
+			}
+
+			encoder := json.NewEncoder(w)
+			return encoder.Encode(jsonResponse)
+		}
+
 		http.Handle("/plugin/"+pluginName+"/", handle(&MiddlewareData{}, printLog, ensureAuthentication, pluginHandlerFunc))
+		http.Handle("/plugin/"+pluginName+"/api/", handle(&MiddlewareData{}, printLog, ensureAuthentication, apiHandlerFunc))
 	}
 
 	if len(routePlugins) == 0 {
